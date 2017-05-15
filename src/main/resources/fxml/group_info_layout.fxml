@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" prefHeight="825.0" prefWidth="1015.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iliuxa.labshelperapp.view.MainController">
+   <children>
+      <SplitPane dividerPositions="0.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="298.0" prefWidth="290.0">
+               <children>
+                  <TableView fx:id="group_list" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columns>
+                      <TableColumn fx:id="group" prefWidth="199.0" text="Группа" />
+                    </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+               </children></AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="298.0" prefWidth="294.0">
+               <children>
+                  <TableView fx:id="student_table" fixedCellSize="0.0" layoutX="47.0" layoutY="49.0" prefHeight="200.0" prefWidth="825.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columns>
+                      <TableColumn fx:id="name" prefWidth="150.0" text="ФИО" />
+                      <TableColumn fx:id="lab_1" minWidth="0.0" prefWidth="75.0" text="Лаб 1" />
+                        <TableColumn fx:id="lab_2" prefWidth="75.0" text="Лаб 2" />
+                        <TableColumn fx:id="lab_3" prefWidth="75.0" text="Лаб 3" />
+                        <TableColumn fx:id="lab_4" prefWidth="75.0" text="Лаб 4" />
+                        <TableColumn fx:id="lab_5" prefWidth="75.0" text="Лаб 5" />
+                        <TableColumn fx:id="lab_6" prefWidth="75.0" text="Лаб 6" />
+                        <TableColumn fx:id="lab_7" prefWidth="75.0" text="Лаб 7" />
+                        <TableColumn fx:id="lab_8" prefWidth="75.0" text="Лаб 8" />
+                        <TableColumn fx:id="total" prefWidth="75.0" text="Итог" />
+                    </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+               </children></AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
