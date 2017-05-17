@@ -40,6 +40,10 @@ public class StudentsToLabs {
         this.labMark = labMark;
     }
 
+    public StudentsToLabs(String labPath){
+        this.labPath = labPath;
+    }
+
     public int getLabId() {
         return labId;
     }

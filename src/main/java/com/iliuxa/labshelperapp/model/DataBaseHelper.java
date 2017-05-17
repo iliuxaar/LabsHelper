@@ -16,14 +16,14 @@ public class DataBaseHelper{
 
     private final static String DATABASE_URL = "jdbc:sqlite:";
     private static final String DATABASE_NAME = "labsHelper.s3db";
-    private static final int DATABASE_VERSION = 1;
 
     private ConnectionSource mConnectionSource;
     private StudentDao mStudentDao;
     private GroupDao mGroupDao;
-    private GroupsToLabsDao mGroupsToLabs;
+    private GroupsToLabsDao mGroupsToLabsDao;
     private LabDao mLabDao;
-    private StudentsToLabsDao mStudentsToLabs;
+    private StudentsToLabsDao mStudentsToLabsDao;
+    private LabsInfoDao mLabsInfoDao;
 
     public void openDataBase() throws SQLException {
         mConnectionSource = new JdbcConnectionSource(DATABASE_URL + DATABASE_NAME);
@@ -36,18 +36,28 @@ public class DataBaseHelper{
         TableUtils.createTableIfNotExists(mConnectionSource, Lab.class);
         TableUtils.createTableIfNotExists(mConnectionSource, GroupsToLabs.class);
         TableUtils.createTableIfNotExists(mConnectionSource, StudentsToLabs.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, LabsInfo.class);
         //todo add tables
 
-        getStudentDao();
-        getGroupDao();
+        initDao();
 
-        /*mGroupDao.create(new Group("350503"));
-        mGroupDao.create(new Group("350504"));
+        //Student student = mStudentDao.getEqualsStudent(studentik);
+        //mGroupDao.create(new Group("350503"));
+        /*mGroupDao.create(new Group("350504"));
         mGroupDao.create(new Group("350505"));*/
 
         /*mStudentDao.create(new Student("fsg",1));
         mStudentDao.create(new Student("asd",2));
         mStudentDao.create(new Student("qwe",3));*/
+    }
+
+    private void initDao() throws SQLException {
+        getStudentDao();
+        getGroupDao();
+        getLabDao();
+        getLabsInfoDao();
+        getGroupsToLabsDao();
+        getStudentsToLabsDao();
     }
 
     public StudentDao getStudentDao() throws SQLException {
@@ -64,31 +74,42 @@ public class DataBaseHelper{
         return mGroupDao;
     }
 
-    public GroupsToLabsDao getmGroupsToLabs() throws SQLException {
-        if(mGroupsToLabs == null){
-            mGroupsToLabs = new GroupsToLabsDao(mConnectionSource, GroupsToLabs.class);
+    public GroupsToLabsDao getGroupsToLabsDao() throws SQLException {
+        if(mGroupsToLabsDao == null){
+            mGroupsToLabsDao = new GroupsToLabsDao(mConnectionSource, GroupsToLabs.class);
         }
-        return mGroupsToLabs;
+        return mGroupsToLabsDao;
     }
 
-    public LabDao getmLabDao() throws SQLException {
+    public LabDao getLabDao() throws SQLException {
         if(mLabDao == null){
             mLabDao = new LabDao(mConnectionSource, Lab.class);
         }
         return mLabDao;
     }
 
-    public StudentsToLabsDao getmStudentsToLabs() throws SQLException {
-        if(mStudentsToLabs == null){
-            mStudentsToLabs = new StudentsToLabsDao(mConnectionSource, StudentsToLabs.class);
+    public StudentsToLabsDao getStudentsToLabsDao() throws SQLException {
+        if(mStudentsToLabsDao == null){
+            mStudentsToLabsDao = new StudentsToLabsDao(mConnectionSource, StudentsToLabs.class);
         }
-        return mStudentsToLabs;
+        return mStudentsToLabsDao;
+    }
+
+    public LabsInfoDao getLabsInfoDao() throws SQLException {
+        if(mLabsInfoDao == null){
+            mLabsInfoDao =  new LabsInfoDao(mConnectionSource, LabsInfo.class);
+        }
+        return mLabsInfoDao;
     }
 
     public void closeDataBase() throws IOException {
         mConnectionSource.close();
         mGroupDao = null;
         mStudentDao = null;
+        mGroupsToLabsDao = null;
+        mStudentsToLabsDao = null;
+        mLabDao = null;
+        mLabsInfoDao = null;
     }
 
     public ObservableList<StudentInfo> getStudentInfo(Group group) throws SQLException {
@@ -101,5 +122,23 @@ public class DataBaseHelper{
             studentsInfo.add(studentInfo);
         }
         return studentsInfo;
+    }
+
+    public void createFieldsAfterDownload(LabsInfo labsInfo, Group group, Student student
+            , StudentsToLabs studentsToLabs, Lab lab, GroupsToLabs groupsToLabs) throws SQLException {
+
+        LabsInfo tempLabsInfo = mLabsInfoDao.createField(labsInfo);
+        lab.setLabInfoId(tempLabsInfo.getId());
+        Lab tempLab = mLabDao.createField(lab);
+        Group tempGroup = mGroupDao.createField(group);
+        student.setGroupId(tempGroup.getId());
+        Student tempStudent = mStudentDao.createField(student);
+        studentsToLabs.setStudentId(tempStudent.getId());
+        studentsToLabs.setLabId(tempLab.getId());
+        StudentsToLabs tempStudentsToLabs = mStudentsToLabsDao.createField(studentsToLabs);
+        groupsToLabs.setLabId(tempLab.getId());
+        groupsToLabs.setGroupId(tempGroup.getId());
+        GroupsToLabs tempGroupsToLabs = mGroupsToLabsDao.createField(groupsToLabs);
+
     }
 }

@@ -1,5 +1,6 @@
 package com.iliuxa.labshelperapp.application;
 
+import com.iliuxa.labshelperapp.model.DataBaseFactory;
 import com.iliuxa.labshelperapp.view.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -48,6 +49,11 @@ public class MainApp extends Application {
 
 
     public static void main(String[] args) throws Exception {
-        launch(args);
+        try {
+            DataBaseFactory.getInstance().openDataBase();
+            launch(args);
+        }finally {
+            DataBaseFactory.getInstance().closeDataBase();
+        }
     }
 }

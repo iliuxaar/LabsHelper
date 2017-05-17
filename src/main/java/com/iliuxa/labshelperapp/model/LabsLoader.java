@@ -1,10 +1,13 @@
 package com.iliuxa.labshelperapp.model;
 
+import com.iliuxa.labshelperapp.pojo.*;
+
 import javax.mail.*;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeUtility;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Properties;
 
 public class LabsLoader {
@@ -14,37 +17,31 @@ public class LabsLoader {
     private static final String PATH_ABSOLUTE = new File("").getAbsolutePath();
 
     private String path = PATH_ABSOLUTE;
-    private String labName;
-    private int labNumber;
-    private String group;
-    private String studentName;
+    private String mLabName;
+    private int mLabNumber;
+    private int mTerm;
+    private String mGroup;
+    private String mStudentName;
 
     private Properties mProperties;
     private Store mStore;
     private Folder mFolderInbox;
 
-    public void downloadEmailAttachments(String userName, String password) {
+    public void downloadEmailAttachments(String userName, String password) throws MessagingException, SQLException, IOException {
         initProperties();
         Session session = Session.getDefaultInstance(mProperties);
-        try {
-            initMessagesStore(session, userName, password);
-            Message[] arrayMessages = mFolderInbox.getMessages();
-            for (Message message : arrayMessages) {
-                String subject = message.getSubject();
-                updateDataBase(subject);
-                String sentDate = message.getSentDate().toString();
-                findAttachments(message);
-                System.out.println(subject);
-                System.out.println(sentDate + "\n\n\n");
-            }
-            closeMessagesStore();
-        } catch (NoSuchProviderException ex) {
-            throw new RuntimeException("No provider for pop3");
-        } catch (MessagingException ex) {
-            throw new RuntimeException("Could not connect to the message store");
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        initMessagesStore(session, userName, password);
+        Message[] arrayMessages = mFolderInbox.getMessages();
+        for (Message message : arrayMessages) {
+            String subject = message.getSubject();
+            updateDataBase(subject);
+            String sentDate = message.getSentDate().toString();
+            findAttachments(message);
+            //todo rebuild path
+            System.out.println(subject);
+            System.out.println(sentDate + "\n\n\n");
         }
+        closeMessagesStore();
     }
 
     public boolean isConnectionSuccess(String userName, String password){
@@ -105,18 +102,28 @@ public class LabsLoader {
         }
     }
 
-    private void updateDataBase(String subject){
+    private void updateDataBase(String subject) throws SQLException {
         path = PATH_ABSOLUTE;
         String[] parseSubject = subject.split("_");
-        labName = parseSubject[0];
-        labNumber = Integer.valueOf(parseSubject[1].toCharArray()[2]);
-        group = parseSubject[2];
-        studentName = parseSubject[3].concat("_" + parseSubject[4]);
+        if (parseSubject.length < 5) return;
+        mLabName = parseSubject[0];
+        mTerm = Integer.valueOf(parseSubject[1]);
+        mLabNumber = Integer.valueOf(parseSubject[3]);
+        mGroup = parseSubject[4];
+        mStudentName = parseSubject[5].concat(" " + parseSubject[6]);
 
-        makeDir("Ð›Ð°Ð±Ð¾Ñ€Ð°Ñ‚Ð¾Ñ€Ð½Ñ‹Ðµ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹");
-        makeDir(group);
-        makeDir(studentName);
-        makeDir(labName);
+        makeDir("Ëàáîðàòîðíûå ðàáîòû");
+        makeDir(mGroup);
+        makeDir(mStudentName);
+        makeDir(mLabName);
+
+        Group group = new Group(mGroup);
+        Lab lab = new Lab(mLabNumber);
+        LabsInfo labsInfo = new LabsInfo(mLabName, mTerm);
+        Student student = new Student(mStudentName);
+        StudentsToLabs studentsToLabs = new StudentsToLabs(path);
+        GroupsToLabs groupsToLabs = new GroupsToLabs(0, 0);
+        DataBaseFactory.getInstance().getDataBase().createFieldsAfterDownload(labsInfo,group,student,studentsToLabs,lab,groupsToLabs);
     }
 
     private void makeDir(String newPath){
@@ -129,5 +136,5 @@ public class LabsLoader {
     /**
      * Runs this program with Gmail POP3 server
      */
-    //Ð‘Ð”_Ð›Ð 1_350503_ÐÑ€Ð¸ÐºÐ¾_Ð˜Ð»ÑŒÑ
+    //ÁÄ_1_ËÐ_1_350503_Àðèêî_Èëüÿ
 }

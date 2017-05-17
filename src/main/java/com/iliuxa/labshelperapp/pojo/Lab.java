@@ -11,7 +11,7 @@ import javafx.beans.property.StringProperty;
 public class Lab {
 
     public static final String FIELD_LAB_NUMBER = "lab_number";
-    public static final String FIELD_LAB_NAME = "lab_name";
+    public static final String FIELD_LABS_INFO_ID = "labs_info_id";
 
     @DatabaseField(generatedId = true)
     private int id;
@@ -19,14 +19,18 @@ public class Lab {
     @DatabaseField(columnName = FIELD_LAB_NUMBER, canBeNull = false)
     private int labNumber;
 
-    @DatabaseField(columnName = FIELD_LAB_NAME, canBeNull = false)
-    private String labName;
+    @DatabaseField(columnName = FIELD_LABS_INFO_ID, canBeNull = false)
+    private int labInfoId;
 
     Lab(){}
 
-    public Lab(int labNumber, String labName){
+    public Lab(int labNumber){
         this.labNumber = labNumber;
-        this.labName = labName;
+    }
+
+    public Lab(int labNumber, int labInfoId){
+        this.labNumber = labNumber;
+        this.labInfoId = labInfoId;
     }
 
     public int getId() {
@@ -41,20 +45,16 @@ public class Lab {
         this.labNumber = labNumber;
     }
 
-    public String getLabName() {
-        return labName;
+    public int getLabInfoId() {
+        return labInfoId;
     }
 
-    public void setLabName(String labName) {
-        this.labName = labName;
+    public void setLabInfoId(int labInfoId) {
+        this.labInfoId = labInfoId;
     }
 
     public IntegerProperty labNumberProperty(){
         return new SimpleIntegerProperty(labNumber);
-    }
-
-    public StringProperty labNameProperty(){
-        return new SimpleStringProperty(labName);
     }
 
     @Override
@@ -63,7 +63,6 @@ public class Lab {
             return false;
         }
         Lab lab = (Lab) obj;
-        if(!labName.equals(lab.labName))return false;
         return labNumber == lab.labNumber;
     }
 

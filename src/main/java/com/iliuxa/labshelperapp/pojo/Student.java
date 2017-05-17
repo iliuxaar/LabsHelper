@@ -27,6 +27,10 @@ public class Student {
         this.groupId = groupId;
     }
 
+    public Student(String name) {
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }

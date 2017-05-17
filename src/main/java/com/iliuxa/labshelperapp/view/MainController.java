@@ -1,6 +1,8 @@
 package com.iliuxa.labshelperapp.view;
 
 
+import com.iliuxa.labshelperapp.model.DataBaseFactory;
+import com.iliuxa.labshelperapp.model.LabsLoader;
 import com.iliuxa.labshelperapp.pojo.Group;
 import com.iliuxa.labshelperapp.pojo.Student;
 import com.iliuxa.labshelperapp.model.DataBaseHelper;
@@ -12,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -40,18 +43,21 @@ public class MainController {
     private void initialize(){
 
         initCollumn();
-
-        mDataBaseHelper = new DataBaseHelper();
+        LabsLoader labsLoader = new LabsLoader();
+        try {
+            labsLoader.downloadEmailAttachments("iliuxa.ariko@gmail.com","iliuxa250595");
+        } catch (MessagingException | SQLException | IOException e) {
+            e.printStackTrace();
+        }
         mStudents = FXCollections.observableArrayList();
         mGroups = FXCollections.observableArrayList();
 
+
         try {
-            mDataBaseHelper.openDataBase();
-            mGroups.addAll(mDataBaseHelper.getGroupDao().getGroups());
+            mGroups.addAll(DataBaseFactory.getInstance().getDataBase().getGroupDao().getGroups());
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
 
 
         group_list.getSelectionModel().selectedItemProperty().addListener(
@@ -63,17 +69,12 @@ public class MainController {
         update(mGroups.get(0));
         student_table.setItems(mStudents);
 
-        try {
-            mDataBaseHelper.closeDataBase();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void update(Group group){
         mStudents.clear();
         try {
-            mStudents = mDataBaseHelper.getStudentInfo(group);
+            mStudents = DataBaseFactory.getInstance().getDataBase().getStudentInfo(group);
             student_table.setItems(mStudents);
         } catch (SQLException e) {
             e.printStackTrace();
