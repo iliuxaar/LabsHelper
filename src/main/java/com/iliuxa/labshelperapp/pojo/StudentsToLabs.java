@@ -5,6 +5,8 @@ import com.j256.ormlite.table.DatabaseTable;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
+import java.util.Date;
+
 @DatabaseTable(tableName = "students_to_labs")
 public class StudentsToLabs {
 
@@ -12,6 +14,7 @@ public class StudentsToLabs {
     public static final String FIELD_STUDENT_ID = "student_id";
     public static final String FIELD_LAB_MARK = "lab_mark";
     public static final String FIELD_LAB_PATH = "lab_path";
+    public static final String FIELD_SENT_DATE = "sent_date";
 
     @DatabaseField(columnName = FIELD_LAB_ID, canBeNull = false)
     private int labId;
@@ -24,6 +27,9 @@ public class StudentsToLabs {
 
     @DatabaseField(columnName = FIELD_LAB_PATH, canBeNull = false)
     private String labPath;
+
+    @DatabaseField(columnName = FIELD_SENT_DATE, canBeNull = false)
+    private Date sentDate;
 
     StudentsToLabs(){}
 
@@ -40,8 +46,9 @@ public class StudentsToLabs {
         this.labMark = labMark;
     }
 
-    public StudentsToLabs(String labPath){
+    public StudentsToLabs(String labPath, Date sentDate){
         this.labPath = labPath;
+        this.sentDate = sentDate;
     }
 
     public int getLabId() {
@@ -76,6 +83,14 @@ public class StudentsToLabs {
         this.labPath = labPath;
     }
 
+    public Date getSentDate() {
+        return sentDate;
+    }
+
+    public void setSentDate(Date sentDate) {
+        this.sentDate = sentDate;
+    }
+
     public IntegerProperty labMarkProperty(){
         return new SimpleIntegerProperty(labMark);
     }
@@ -94,6 +109,7 @@ public class StudentsToLabs {
         if (studentId != studentsToLabs.studentId) return false;
         if (labId != studentsToLabs.labId) return false;
         if (labMark != studentsToLabs.labMark) return false;
+        if (sentDate != studentsToLabs.sentDate) return false;
         return labPath.equals(studentsToLabs.labPath);
     }
 }

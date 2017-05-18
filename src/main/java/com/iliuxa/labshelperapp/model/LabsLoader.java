@@ -8,6 +8,8 @@ import javax.mail.internet.MimeUtility;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
 public class LabsLoader {
@@ -20,6 +22,7 @@ public class LabsLoader {
     private String mLabName;
     private int mLabNumber;
     private int mTerm;
+    private int mSubGroup;
     private String mGroup;
     private String mStudentName;
 
@@ -33,13 +36,7 @@ public class LabsLoader {
         initMessagesStore(session, userName, password);
         Message[] arrayMessages = mFolderInbox.getMessages();
         for (Message message : arrayMessages) {
-            String subject = message.getSubject();
-            updateDataBase(subject);
-            String sentDate = message.getSentDate().toString();
             findAttachments(message);
-            //todo rebuild path
-            System.out.println(subject);
-            System.out.println(sentDate + "\n\n\n");
         }
         closeMessagesStore();
     }
@@ -83,12 +80,7 @@ public class LabsLoader {
         mStore.close();
     }
 
-    private void downloadFile(MimeBodyPart part) throws IOException, MessagingException {
-        String fileName = MimeUtility.decodeText(part.getFileName());
-        part.saveFile(path + File.separator + fileName);
-    }
-
-    private void findAttachments(Message message) throws MessagingException, IOException {
+    private void findAttachments(Message message) throws MessagingException, IOException, SQLException {
         String contentType = message.getContentType();
         if (contentType.contains("multipart")) {
             Multipart multiPart = (Multipart) message.getContent();
@@ -96,13 +88,18 @@ public class LabsLoader {
             for (int partCount = 0; partCount < numberOfParts; partCount++) {
                 MimeBodyPart part = (MimeBodyPart) multiPart.getBodyPart(partCount);
                 if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
-                    downloadFile(part);
+                    if (message.getSubject().split("_").length == 8) {
+                        String fileName = MimeUtility.decodeText(part.getFileName());
+                        updateDataBase(message, fileName);
+                        part.saveFile(path);
+                    }
                 }
             }
         }
     }
 
-    private void updateDataBase(String subject) throws SQLException {
+    private void updateDataBase(Message message, String fileName) throws SQLException, MessagingException {
+        String subject = message.getSubject();
         path = PATH_ABSOLUTE;
         String[] parseSubject = subject.split("_");
         if (parseSubject.length < 5) return;
@@ -110,18 +107,22 @@ public class LabsLoader {
         mTerm = Integer.valueOf(parseSubject[1]);
         mLabNumber = Integer.valueOf(parseSubject[3]);
         mGroup = parseSubject[4];
-        mStudentName = parseSubject[5].concat(" " + parseSubject[6]);
+        mSubGroup = Integer.parseInt(parseSubject[5]);
+        mStudentName = parseSubject[6].concat(" " + parseSubject[7]);
 
         makeDir("Лабораторные работы");
         makeDir(mGroup);
+        makeDir(String.valueOf(mSubGroup));
         makeDir(mStudentName);
         makeDir(mLabName);
+
+        path += File.separator + fileName;
 
         Group group = new Group(mGroup);
         Lab lab = new Lab(mLabNumber);
         LabsInfo labsInfo = new LabsInfo(mLabName, mTerm);
-        Student student = new Student(mStudentName);
-        StudentsToLabs studentsToLabs = new StudentsToLabs(path);
+        Student student = new Student(mStudentName, mSubGroup);
+        StudentsToLabs studentsToLabs = new StudentsToLabs(path, message.getSentDate());
         GroupsToLabs groupsToLabs = new GroupsToLabs(0, 0);
         DataBaseFactory.getInstance().getDataBase().createFieldsAfterDownload(labsInfo,group,student,studentsToLabs,lab,groupsToLabs);
     }
@@ -136,5 +137,5 @@ public class LabsLoader {
     /**
      * Runs this program with Gmail POP3 server
      */
-    //БД_1_ЛР_1_350503_Арико_Илья
+    //БД_1_ЛР_1_350503_1_Арико_Илья
 }

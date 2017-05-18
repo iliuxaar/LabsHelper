@@ -37,7 +37,6 @@ public class DataBaseHelper{
         TableUtils.createTableIfNotExists(mConnectionSource, GroupsToLabs.class);
         TableUtils.createTableIfNotExists(mConnectionSource, StudentsToLabs.class);
         TableUtils.createTableIfNotExists(mConnectionSource, LabsInfo.class);
-        //todo add tables
 
         initDao();
 
