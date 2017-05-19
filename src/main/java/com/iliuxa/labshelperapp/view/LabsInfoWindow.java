@@ -1,6 +1,7 @@
 package com.iliuxa.labshelperapp.view;
 
 
+import com.iliuxa.labshelperapp.application.MainApp;
 import com.iliuxa.labshelperapp.model.DataBaseFactory;
 import com.iliuxa.labshelperapp.model.LabsLoader;
 import com.iliuxa.labshelperapp.pojo.Group;
@@ -19,7 +20,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 
-public class MainController {
+public class LabsInfoWindow implements BaseView{
+
+    private MainApp mainApp;
 
     private ObservableList<StudentInfo> mStudents;
     private ObservableList<Group> mGroups;
@@ -65,7 +68,6 @@ public class MainController {
 
         group_list.setItems(mGroups);
 
-
         update(mGroups.get(0));
         student_table.setItems(mStudents);
 
@@ -93,5 +95,10 @@ public class MainController {
         lab_8.setCellValueFactory(cellData -> cellData.getValue().marksProperty(8).asObject());
 
         group.setCellValueFactory(cellData -> cellData.getValue().groupProperty());
+    }
+
+    @Override
+    public void setMainApp(MainApp app) {
+        mainApp = app;
     }
 }

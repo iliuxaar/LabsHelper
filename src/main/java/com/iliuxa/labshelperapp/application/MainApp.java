@@ -1,7 +1,8 @@
 package com.iliuxa.labshelperapp.application;
 
 import com.iliuxa.labshelperapp.model.DataBaseFactory;
-import com.iliuxa.labshelperapp.view.MainController;
+import com.iliuxa.labshelperapp.util.DateUtil;
+import com.iliuxa.labshelperapp.view.LabsInfoWindow;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -9,8 +10,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 public class MainApp extends Application {
 
@@ -33,12 +34,12 @@ public class MainApp extends Application {
         primaryStage.show();
     }
 
-    public MainController showGroupsInfo() throws IOException {
+    public LabsInfoWindow showGroupsInfo() throws IOException {
         primaryStage.setTitle("Информация групп");
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(MainApp.class.getResource("/fxml/group_info_layout.fxml"));
+        loader.setLocation(MainApp.class.getResource("/fxml/lab_info_layout.fxml"));
         AnchorPane personOverview = (AnchorPane) loader.load();
-        MainController controller = loader.getController();
+        LabsInfoWindow controller = loader.getController();
         rootLayout.setCenter(personOverview);
         return controller;
     }
@@ -50,6 +51,7 @@ public class MainApp extends Application {
 
     public static void main(String[] args) throws Exception {
         try {
+            Date date = DateUtil.parse("03/5/2015");
             DataBaseFactory.getInstance().openDataBase();
             launch(args);
         }finally {
