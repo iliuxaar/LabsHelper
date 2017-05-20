@@ -4,6 +4,7 @@ import com.iliuxa.labshelperapp.model.DataBaseFactory;
 import com.iliuxa.labshelperapp.util.DateUtil;
 import com.iliuxa.labshelperapp.view.EmailDialog;
 import com.iliuxa.labshelperapp.view.LabsInfoWindow;
+import com.iliuxa.labshelperapp.view.RootMenuWindow;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -33,6 +34,8 @@ public class MainApp extends Application {
         rootLayout = (BorderPane) loader.load();
         Scene scene = new Scene(rootLayout);
         primaryStage.setScene(scene);
+        RootMenuWindow controller = loader.getController();
+        controller.setMainApp(this);
         primaryStage.show();
     }
 
@@ -60,6 +63,10 @@ public class MainApp extends Application {
         EmailDialog emailDialog = loader.getController();
         emailDialog.setDialogStage(dialogStage);
         dialogStage.showAndWait();
+    }
+
+    public void showLabsDialog(){
+
     }
 
     public Stage getPrimaryStage() {
