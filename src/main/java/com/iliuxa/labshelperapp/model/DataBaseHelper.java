@@ -24,6 +24,7 @@ public class DataBaseHelper{
     private LabDao mLabDao;
     private StudentsToLabsDao mStudentsToLabsDao;
     private LabsInfoDao mLabsInfoDao;
+    private EmailDao mEmailDao;
 
     public void openDataBase() throws SQLException {
         mConnectionSource = new JdbcConnectionSource(DATABASE_URL + DATABASE_NAME);
@@ -37,6 +38,7 @@ public class DataBaseHelper{
         TableUtils.createTableIfNotExists(mConnectionSource, GroupsToLabs.class);
         TableUtils.createTableIfNotExists(mConnectionSource, StudentsToLabs.class);
         TableUtils.createTableIfNotExists(mConnectionSource, LabsInfo.class);
+        TableUtils.createTableIfNotExists(mConnectionSource, Email.class);
 
         initDao();
 
@@ -57,6 +59,7 @@ public class DataBaseHelper{
         getLabsInfoDao();
         getGroupsToLabsDao();
         getStudentsToLabsDao();
+        getEmailDao();
     }
 
     public StudentDao getStudentDao() throws SQLException {
@@ -99,6 +102,13 @@ public class DataBaseHelper{
             mLabsInfoDao =  new LabsInfoDao(mConnectionSource, LabsInfo.class);
         }
         return mLabsInfoDao;
+    }
+
+    public EmailDao getEmailDao() throws SQLException {
+        if(mEmailDao == null){
+            mEmailDao = new EmailDao(mConnectionSource, Email.class);
+        }
+        return mEmailDao;
     }
 
     public void closeDataBase() throws IOException {

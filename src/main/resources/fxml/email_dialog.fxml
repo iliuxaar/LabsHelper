@@ -1,14 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="fxml.EmailDialog"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="219.0" prefWidth="380.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iliuxa.labshelperapp.view.EmailDialog">
+    <children><GridPane layoutX="21.0" layoutY="31.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="108.0" prefWidth="331.0" AnchorPane.leftAnchor="21.0" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="10.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="175.0" minWidth="10.0" prefWidth="120.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="240.0" minWidth="10.0" prefWidth="240.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="57.0" minHeight="10.0" prefHeight="53.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="55.0" minHeight="10.0" prefHeight="55.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+        <children><Label text="Email" /><TextField fx:id="emailText" prefHeight="31.0" prefWidth="293.0" promptText="Введите Email" GridPane.columnIndex="1" /><Label text="Пароль" GridPane.rowIndex="1" />
+            <PasswordField fx:id="passwordText" prefHeight="31.0" prefWidth="324.0" promptText="Введите пароль" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        </children>
+    </GridPane>
+        <HBox layoutX="197.1875" layoutY="241.0" spacing="5.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
+            <children><Button layoutX="197.1875" layoutY="241.0" mnemonicParsing="false" onAction="#handleOk" prefWidth="90.0" text="OK" /><Button layoutX="249.375" layoutY="241.0" mnemonicParsing="false" onAction="#handleCancel" prefWidth="90.0" text="Cancel" />
+            </children>
+        </HBox>
+        <Label fx:id="label" layoutX="120.0" layoutY="126.0" prefHeight="21.0" prefWidth="153.0" text="Ошибка соединения" visible="false" />
+        <Button fx:id="checkButton" layoutX="273.0" layoutY="121.0" mnemonicParsing="false" onAction="#handleCheck" text="Проверить" />
+    </children></AnchorPane>

@@ -12,6 +12,7 @@ import com.iliuxa.labshelperapp.pojo.StudentsToLabs;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
@@ -42,8 +43,10 @@ public class LabsInfoWindow implements BaseView{
     @FXML private TableColumn<StudentInfo, Integer> lab_7;
     @FXML private TableColumn<StudentInfo, Integer> lab_8;
 
+    @FXML private Button bt;
+
     @FXML
-    private void initialize(){
+    private void initialize() throws IOException {
 
         initCollumn();
         LabsLoader labsLoader = new LabsLoader();
@@ -68,7 +71,7 @@ public class LabsInfoWindow implements BaseView{
 
         group_list.setItems(mGroups);
 
-        update(mGroups.get(0));
+//        update(mGroups.get(0));
         student_table.setItems(mStudents);
 
     }
@@ -95,6 +98,10 @@ public class LabsInfoWindow implements BaseView{
         lab_8.setCellValueFactory(cellData -> cellData.getValue().marksProperty(8).asObject());
 
         group.setCellValueFactory(cellData -> cellData.getValue().groupProperty());
+    }
+
+    public void onClick() throws IOException {
+        mainApp.showEmailDialog();
     }
 
     @Override

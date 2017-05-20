@@ -2,12 +2,14 @@ package com.iliuxa.labshelperapp.application;
 
 import com.iliuxa.labshelperapp.model.DataBaseFactory;
 import com.iliuxa.labshelperapp.util.DateUtil;
+import com.iliuxa.labshelperapp.view.EmailDialog;
 import com.iliuxa.labshelperapp.view.LabsInfoWindow;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -39,9 +41,25 @@ public class MainApp extends Application {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(MainApp.class.getResource("/fxml/lab_info_layout.fxml"));
         AnchorPane personOverview = (AnchorPane) loader.load();
-        LabsInfoWindow controller = loader.getController();
         rootLayout.setCenter(personOverview);
+        LabsInfoWindow controller = loader.getController();
+        controller.setMainApp(this);
         return controller;
+    }
+
+    public void showEmailDialog() throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(MainApp.class.getResource("/fxml/email_dialog.fxml"));
+        AnchorPane page = (AnchorPane)loader.load();
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("¬ведите Email");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(page);
+        dialogStage.setScene(scene);
+        EmailDialog emailDialog = loader.getController();
+        emailDialog.setDialogStage(dialogStage);
+        dialogStage.showAndWait();
     }
 
     public Stage getPrimaryStage() {
