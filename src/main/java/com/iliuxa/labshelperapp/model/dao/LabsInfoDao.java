@@ -27,4 +27,15 @@ public class LabsInfoDao extends BaseDaoImpl<LabsInfo, Integer> {
         if(temp != null && temp.size() > 0) return temp.get(0);
         else return null;
     }
+
+    public LabsInfo getLabsInfo(LabsInfo labsInfo) throws SQLException {
+        List<LabsInfo> temp = query(queryBuilder()
+                .where()
+                .eq(LabsInfo.FIELD_LAB_NAME, labsInfo.getLabName())
+                .and()
+                .eq(LabsInfo.FIELD_TERM, labsInfo.getTerm())
+                .prepare());
+        if(temp != null && temp.size() > 0) return temp.get(0);
+        else return null;
+    }
 }

@@ -16,6 +16,9 @@ public class StudentsToLabs {
     public static final String FIELD_LAB_PATH = "lab_path";
     public static final String FIELD_SENT_DATE = "sent_date";
 
+    @DatabaseField(generatedId = true)
+    private int id;
+
     @DatabaseField(columnName = FIELD_LAB_ID, canBeNull = false)
     private int labId;
 
@@ -111,5 +114,9 @@ public class StudentsToLabs {
         if (labMark != studentsToLabs.labMark) return false;
         if (sentDate != studentsToLabs.sentDate) return false;
         return labPath.equals(studentsToLabs.labPath);
+    }
+
+    public int getId() {
+        return id;
     }
 }

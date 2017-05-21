@@ -29,4 +29,20 @@ public class GroupsToLabsDao extends BaseDaoImpl<GroupsToLabs, Integer> {
         if(tempGroupsToLabs != null && tempGroupsToLabs.size() > 0) return tempGroupsToLabs.get(0);
         else return null;
     }
+
+    public List<GroupsToLabs> getGroupsToLabsByLabId(Lab lab) throws SQLException {
+        return query(queryBuilder().where().eq(GroupsToLabs.FIELD_LAB_ID, lab.getId()).prepare());
+    }
+
+    public List<GroupsToLabs> getGroupsToLabsByLabId(int labId) throws SQLException {
+        return query(queryBuilder().where().eq(GroupsToLabs.FIELD_LAB_ID, labId).prepare());
+    }
+
+    public GroupsToLabs getGroupsToLabsByLabIdAndGroupId(int labId, int groupId, int subGroup) throws SQLException {
+        List<GroupsToLabs> groupsToLabs = queryForMatching(new GroupsToLabs(groupId, labId, subGroup));
+        if(groupsToLabs.size() != 0){
+            return groupsToLabs.get(0);
+        }
+        return null;
+    }
 }

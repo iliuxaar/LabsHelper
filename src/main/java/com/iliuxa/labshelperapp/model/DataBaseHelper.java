@@ -8,8 +8,12 @@ import com.j256.ormlite.table.TableUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataBaseHelper{
@@ -41,15 +45,6 @@ public class DataBaseHelper{
         TableUtils.createTableIfNotExists(mConnectionSource, Email.class);
 
         initDao();
-
-        //Student student = mStudentDao.getEqualsStudent(studentik);
-        //mGroupDao.create(new Group("350503"));
-        /*mGroupDao.create(new Group("350504"));
-        mGroupDao.create(new Group("350505"));*/
-
-        /*mStudentDao.create(new Student("fsg",1));
-        mStudentDao.create(new Student("asd",2));
-        mStudentDao.create(new Student("qwe",3));*/
     }
 
     private void initDao() throws SQLException {
@@ -149,5 +144,100 @@ public class DataBaseHelper{
         groupsToLabs.setGroupId(tempGroup.getId());
         GroupsToLabs tempGroupsToLabs = mGroupsToLabsDao.createField(groupsToLabs);
 
+    }
+
+    public void createLab(LabsInfo labsInfo) throws SQLException {
+        if( mLabsInfoDao.getEqualsLabsInfo(labsInfo) == null) {
+            LabsInfo tempLabsInfo = mLabsInfoDao.createField(labsInfo);
+            for (int i = 0; i < tempLabsInfo.getLabCount(); i++) {
+                mLabDao.create(new Lab(i + 1, tempLabsInfo.getId()));
+            }
+        } else return;
+    }
+
+    public void changeLab(LabsInfo labsInfo) throws SQLException, IOException {
+        LabsInfo temp = mLabsInfoDao.getLabsInfo(labsInfo);
+        int lastLabCount = temp.getLabCount();
+        temp.setLabCount(labsInfo.getLabCount());
+        temp.setLabName(labsInfo.getLabName());
+        temp.setTerm(labsInfo.getTerm());
+        mLabsInfoDao.update(temp);
+        if(lastLabCount > labsInfo.getLabCount()){
+            int dif = lastLabCount - labsInfo.getLabCount();
+            for(int i = lastLabCount - dif; i < lastLabCount; i++){
+                Lab lab = mLabDao.getEqualsLab(new Lab(i + 1 , temp.getId()));
+                mLabDao.delete(lab);
+                for(StudentsToLabs stl : mStudentsToLabsDao.getStudentsToLabsByLabId(lab)){
+                    if (stl == null) continue;
+                    mStudentsToLabsDao.delete(stl);
+                    String dir = new File("").getAbsolutePath() + "\\";
+                    Files.delete(new File(dir + stl.getLabPath()).toPath());
+                }
+                for(GroupsToLabs gtl : mGroupsToLabsDao.getGroupsToLabsByLabId(lab)){
+                    if(gtl == null) continue;
+                    mGroupsToLabsDao.delete(gtl);
+                }
+            }
+        } else if (lastLabCount < labsInfo.getLabCount()){
+            int dif = labsInfo.getLabCount() - lastLabCount;
+            for(int i = dif - labsInfo.getLabCount(); i < labsInfo.getLabCount(); i++){
+                Lab lab = new Lab(i + 1 , temp.getId());
+                mLabDao.createField(lab);
+            }
+        }
+    }
+
+    public void deleteLab(LabsInfo labsInfo) throws SQLException {
+        LabsInfo tempLabsInfo = mLabsInfoDao.getEqualsLabsInfo(labsInfo);
+        mLabsInfoDao.delete(tempLabsInfo);
+        for (Lab lab : mLabDao.getLabsByLabsInfoId(tempLabsInfo)){
+            mLabDao.delete(lab);
+            for(StudentsToLabs stl : mStudentsToLabsDao.getStudentsToLabsByLabId(lab)){
+                if (stl == null) continue;
+                mStudentsToLabsDao.delete(stl);
+            }
+            for(GroupsToLabs gtl : mGroupsToLabsDao.getGroupsToLabsByLabId(lab)){
+                if(gtl == null) continue;
+                mGroupsToLabsDao.delete(gtl);
+            }
+        }
+    }
+
+    public List<Group> getGroupsWithSameLabName(LabsInfo labsInfo) throws SQLException {
+        List<Lab> labs = mLabDao.getLabsByLabsInfoId(labsInfo);
+        List<Integer> groups = new ArrayList<>();
+        for(Lab lab : labs){
+            if(groups.indexOf(lab.getId()) == -1){
+                groups.add(lab.getId());
+            }
+        }
+
+        List<GroupsToLabs> groupsToLabs = new ArrayList<>();
+        for(int i = 0; i < groups.size(); i++){
+            groupsToLabs.addAll(mGroupsToLabsDao.getGroupsToLabsByLabId(groups.get(i)));
+        }
+
+        groups.clear();
+
+        for (GroupsToLabs group : groupsToLabs){
+            if(groupsToLabs.indexOf(group.getGroupId()) == -1){
+                if(groups.indexOf(group.getGroupId()) == -1)
+                groups.add(group.getGroupId());
+            }
+        }
+
+        List<Group> groupList = new ArrayList<>();
+        for(int i = 0; i < groups.size(); i++){
+            groupList.add(mGroupDao.queryForId(groups.get(i)));
+        }
+
+        return groupList;
+    }
+
+    public GroupsToLabs getGropsToLabsInfo(int labNumber, int groupId, int subGroup, int labsInfoId) throws SQLException {
+        Lab lab = mLabDao.getLab(labsInfoId, labNumber);
+        if(lab != null)
+            return mGroupsToLabsDao.createField(new GroupsToLabs(groupId, lab.getId(), subGroup));
+        return null;
     }
 }

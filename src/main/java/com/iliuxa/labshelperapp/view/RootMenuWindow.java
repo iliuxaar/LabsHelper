@@ -2,19 +2,10 @@ package com.iliuxa.labshelperapp.view;
 
 import com.iliuxa.labshelperapp.application.MainApp;
 import javafx.stage.FileChooser;
-import sun.misc.IOUtils;
-import sun.nio.ch.IOUtil;
 
-import javax.imageio.ImageIO;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 public class RootMenuWindow {
 
@@ -28,8 +19,12 @@ public class RootMenuWindow {
         mainApp.showEmailDialog();
     }
 
-    public void onLabsClick(){
-        mainApp.showLabsDialog();
+    public void onLabsCreatorClick() throws IOException {
+        mainApp.showLabsCreatorDialog();
+    }
+
+    public void onDateChangerClick()throws IOException{
+        mainApp.showDatesDialog();
     }
 
     public void setMainApp(MainApp app){

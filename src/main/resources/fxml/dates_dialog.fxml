@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="341.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iliuxa.labshelperapp.view.DatesDialog">
+   <children>
+      <Pane prefHeight="500.0" prefWidth="700.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Button layoutX="393.0" layoutY="296.0" mnemonicParsing="false" onAction="#onApplyClick" text="Принять" />
+            <DatePicker fx:id="beginDate" layoutX="252.0" layoutY="172.0" />
+            <DatePicker fx:id="endDate" layoutX="252.0" layoutY="252.0" />
+            <Label layoutX="256.0" layoutY="141.0" text="Начало лабораторной работы" />
+            <Label layoutX="260.0" layoutY="221.0" text="Конец лабораторной работы" />
+            <ChoiceBox fx:id="subGroupPicker" layoutX="286.0" layoutY="102.0" prefWidth="150.0" />
+            <Label layoutX="289.0" layoutY="74.0" text="Выберите подгруппу" />
+            <Button layoutX="253.0" layoutY="296.0" mnemonicParsing="false" onAction="#onCancelClick" text="Отмена" />
+            <ChoiceBox fx:id="labNumberPicker" layoutX="286.0" layoutY="42.0" prefWidth="150.0" />
+            <Label layoutX="275.0" layoutY="15.0" text="Выберите номер работы" />
+            <TableView fx:id="groupNumberList" layoutX="94.0" prefHeight="341.0" prefWidth="131.0">
+              <columns>
+                <TableColumn fx:id="groupCell" prefWidth="130.0" text="Группа" />
+              </columns>
+            </TableView>
+            <TableView fx:id="labNameList" prefHeight="341.0" prefWidth="94.0">
+              <columns>
+                <TableColumn fx:id="labNameCell" prefWidth="93.0" text="Предмет" />
+              </columns>
+            </TableView>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

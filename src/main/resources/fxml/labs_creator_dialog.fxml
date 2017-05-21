@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane prefHeight="374.0" prefWidth="521.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iliuxa.labshelperapp.view.LabsCreatorDialog">
+   <children>
+      <Pane layoutX="158.0" layoutY="100.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <TableView fx:id="labsNameList" prefHeight="374.0" prefWidth="109.0">
+              <columns>
+                <TableColumn fx:id="nameCell" prefWidth="108.0" text="Предмет" />
+              </columns>
+            </TableView>
+            <Label layoutX="251.0" layoutY="48.0" text="Название предмета" />
+            <TextField fx:id="nameField" layoutX="226.0" layoutY="81.0" />
+            <Label layoutX="290.0" layoutY="138.0" text="Семестр" />
+            <TextField fx:id="termField" layoutX="226.0" layoutY="170.0" />
+            <Label layoutX="205.0" layoutY="230.0" text="Количество лабораторных работ" />
+            <TextField fx:id="countField" layoutX="226.0" layoutY="260.0" />
+            <Button layoutX="432.0" layoutY="329.0" mnemonicParsing="false" onAction="#onCreateClick" text="Создать" />
+            <Button layoutX="221.0" layoutY="328.0" mnemonicParsing="false" onAction="#onChangeClick" text="Изменить существующий" />
+            <Button layoutX="133.0" layoutY="329.0" mnemonicParsing="false" onAction="#onDeleteClick" text="Удалить" />
+            <Label fx:id="errorLabel" alignment="CENTER" layoutX="173.0" layoutY="300.0" prefHeight="21.0" prefWidth="289.0" textAlignment="CENTER" textFill="#d01212" visible="false" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

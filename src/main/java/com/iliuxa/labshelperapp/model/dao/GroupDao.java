@@ -29,4 +29,5 @@ public class GroupDao extends BaseDaoImpl<Group, Integer>{
         if (groups != null && groups.size() > 0) return groups.get(0);
         else return null;
     }
+
 }

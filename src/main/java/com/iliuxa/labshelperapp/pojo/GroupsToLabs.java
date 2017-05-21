@@ -12,6 +12,10 @@ public class GroupsToLabs {
     public static final String FIELD_LAB_ID = "lab_id";
     public static final String FIELD_DEAD_LINE = "dead_line";
     public static final String FIELD_BEGIN_TIME = "begin_time";
+    public static final String FIELD_SUBGROUP = "subgroup";
+
+    @DatabaseField(generatedId = true)
+    private int id;
 
     @DatabaseField(columnName = FIELD_GROUP_ID, canBeNull = false)
     private int groupId;
@@ -25,11 +29,15 @@ public class GroupsToLabs {
     @DatabaseField(columnName = FIELD_BEGIN_TIME, canBeNull = true)
     private Date beginTime;
 
+    @DatabaseField(columnName = FIELD_SUBGROUP, canBeNull = false)
+    private int subGroup;
+
     GroupsToLabs(){}
 
-    public GroupsToLabs(int groupId, int labId){
+    public GroupsToLabs(int groupId, int labId , int subGroup){
         this.groupId = groupId;
         this.labId = labId;
+        this.subGroup = subGroup;
     }
 
     public GroupsToLabs(int groupId, int labId, Date beginTime){
@@ -77,6 +85,13 @@ public class GroupsToLabs {
         this.beginTime = beginTime;
     }
 
+    public int getSubGroup() {
+        return subGroup;
+    }
+
+    public void setSubGroup(int subGroup) {
+        this.subGroup = subGroup;
+    }
 
     //todo add property
 
@@ -97,5 +112,9 @@ public class GroupsToLabs {
         if (labId != groupsToLabs.labId) return false;
         if (!beginTime.equals(groupsToLabs.beginTime)) return false;
         return deadLine.equals(groupsToLabs.deadLine);
+    }
+
+    public int getId() {
+        return id;
     }
 }

@@ -2,9 +2,7 @@ package com.iliuxa.labshelperapp.application;
 
 import com.iliuxa.labshelperapp.model.DataBaseFactory;
 import com.iliuxa.labshelperapp.util.DateUtil;
-import com.iliuxa.labshelperapp.view.EmailDialog;
-import com.iliuxa.labshelperapp.view.LabsInfoWindow;
-import com.iliuxa.labshelperapp.view.RootMenuWindow;
+import com.iliuxa.labshelperapp.view.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -13,6 +11,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
@@ -65,8 +65,34 @@ public class MainApp extends Application {
         dialogStage.showAndWait();
     }
 
-    public void showLabsDialog(){
+    public void showDatesDialog() throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(MainApp.class.getResource("/fxml/dates_dialog.fxml"));
+        AnchorPane page = (AnchorPane)loader.load();
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Управление временем сдач");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(page);
+        dialogStage.setScene(scene);
+        DatesDialog datesDialog = loader.getController();
+        datesDialog.setDialogStage(dialogStage);
+        dialogStage.showAndWait();
+    }
 
+    public void showLabsCreatorDialog() throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(MainApp.class.getResource("/fxml/labs_creator_dialog.fxml"));
+        AnchorPane page = (AnchorPane)loader.load();
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Управление лабораторными работами");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(page);
+        dialogStage.setScene(scene);
+        LabsCreatorDialog labsCreatorDialog = loader.getController();
+        labsCreatorDialog.setDialogStage(dialogStage);
+        dialogStage.showAndWait();
     }
 
     public Stage getPrimaryStage() {
@@ -76,7 +102,9 @@ public class MainApp extends Application {
 
     public static void main(String[] args) throws Exception {
         try {
-            Date date = DateUtil.parse("03/5/2015");
+            /*if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().open(new File("E:\\БД_ЛР1_350503_Арико_Илья.docx"));
+            }*/
             DataBaseFactory.getInstance().openDataBase();
             launch(args);
         }finally {

@@ -10,10 +10,17 @@ import java.util.Date;
 
 public class DateUtil {
 
-    private static final String DATE_PATTERN = "dd/MM/yyyy";
+    private static final String DATE_PATTERN = "dd.MM.yyyy";
 
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern(DATE_PATTERN);
+
+    public static String format(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return new SimpleDateFormat(DATE_PATTERN).format(date);
+    }
 
     public static String format(LocalDate date) {
         if (date == null) {
@@ -28,6 +35,10 @@ public class DateUtil {
         } catch (DateTimeParseException | ParseException e) {
             return null;
         }
+    }
+
+    public static LocalDate getLocalDate(String dateString){
+        return dateString != null ? LocalDate.parse(dateString, DATE_FORMATTER) : null;
     }
 
     public static boolean validDate(String dateString) {

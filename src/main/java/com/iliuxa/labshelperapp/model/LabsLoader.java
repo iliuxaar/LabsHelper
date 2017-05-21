@@ -89,7 +89,7 @@ public class LabsLoader {
                     if (message.getSubject().split("_").length == 8) {
                         String fileName = MimeUtility.decodeText(part.getFileName());
                         updateDataBase(message, fileName);
-                        part.saveFile(path);
+                        part.saveFile(PATH_ABSOLUTE + path);
                     }
                 }
             }
@@ -98,7 +98,7 @@ public class LabsLoader {
 
     private void updateDataBase(Message message, String fileName) throws SQLException, MessagingException {
         String subject = message.getSubject();
-        path = PATH_ABSOLUTE;
+        path = "";
         String[] parseSubject = subject.split("_");
         if (parseSubject.length < 5) return;
         mLabName = parseSubject[0];
@@ -121,7 +121,7 @@ public class LabsLoader {
         LabsInfo labsInfo = new LabsInfo(mLabName, mTerm);
         Student student = new Student(mStudentName, mSubGroup);
         StudentsToLabs studentsToLabs = new StudentsToLabs(path, message.getSentDate());
-        GroupsToLabs groupsToLabs = new GroupsToLabs(0, 0);
+        GroupsToLabs groupsToLabs = new GroupsToLabs(0, 0 , mSubGroup);
         DataBaseFactory.getInstance().getDataBase().createFieldsAfterDownload(labsInfo,group,student,studentsToLabs,lab,groupsToLabs);
     }
 

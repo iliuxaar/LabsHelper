@@ -1,5 +1,6 @@
 package com.iliuxa.labshelperapp.model.dao;
 
+import com.iliuxa.labshelperapp.pojo.Lab;
 import com.iliuxa.labshelperapp.pojo.Student;
 import com.iliuxa.labshelperapp.pojo.StudentsToLabs;
 import com.j256.ormlite.dao.BaseDaoImpl;
@@ -23,5 +24,9 @@ public class StudentsToLabsDao extends BaseDaoImpl<StudentsToLabs, Integer> {
         List<StudentsToLabs> temp = queryForMatching(studentsToLabs);
         if(temp != null && temp.size() > 0) return temp.get(0);
         else return null;
+    }
+
+    public List<StudentsToLabs> getStudentsToLabsByLabId(Lab lab) throws SQLException {
+        return query(queryBuilder().where().eq(StudentsToLabs.FIELD_LAB_ID, lab.getId()).prepare());
     }
 }

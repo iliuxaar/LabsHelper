@@ -7,15 +7,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
 import javafx.scene.paint.*;
 import javafx.stage.Stage;
 
 import javax.mail.internet.MimeUtility;
-import javax.xml.datatype.DatatypeFactory;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.regex.Pattern;
 

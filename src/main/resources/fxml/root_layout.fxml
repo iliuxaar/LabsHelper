@@ -21,7 +21,9 @@
             <items>
               <MenuItem mnemonicParsing="false" onAction="#onEmailClick" text="Изменить Email" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#onLabsClick" text="Управление лабораторными работам" />
+                  <MenuItem mnemonicParsing="false" onAction="#onLabsCreatorClick" text="Управление лабораторными работам" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#onDateChangerClick" text="Управление временем сдач" />
             </items>
           </Menu>
         </menus>
