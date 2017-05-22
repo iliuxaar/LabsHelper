@@ -29,7 +29,8 @@ public class LabsCreatorDialog {
     @FXML
     private void initialize() throws SQLException {
         mLabName = FXCollections.observableArrayList();
-        mLabName.addAll(DataBaseFactory.getInstance().getDataBase().getLabsInfoDao().queryForAll());
+
+        updateContent();
 
         labsNameList.setItems(mLabName);
 
@@ -46,17 +47,17 @@ public class LabsCreatorDialog {
 
     public void onCreateClick() throws SQLException {
         DataBaseFactory.getInstance().getDataBase().createLab(verifyData());
-        dialogStage.close();
+        updateContent();
     }
 
     public void onDeleteClick() throws SQLException {
         DataBaseFactory.getInstance().getDataBase().deleteLab(verifyData());
-        dialogStage.close();
+        updateContent();
     }
 
     public void onChangeClick() throws SQLException, IOException {
         DataBaseFactory.getInstance().getDataBase().changeLab(verifyData());
-        dialogStage.close();
+        updateContent();
     }
 
     private LabsInfo verifyData(){
@@ -76,5 +77,10 @@ public class LabsCreatorDialog {
 
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
+    }
+
+    private void updateContent() throws SQLException {
+        mLabName.clear();
+        mLabName.addAll(DataBaseFactory.getInstance().getDataBase().getLabsInfoDao().queryForAll());
     }
 }

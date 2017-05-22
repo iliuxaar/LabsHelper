@@ -100,7 +100,6 @@ public class DatesDialog {
         }
     }
 
-
     public void onApplyClick() throws SQLException {
         int labNumber = labNumberPicker.getValue();
         int groupId = groupNumberList.getSelectionModel().getSelectedItem().getId();

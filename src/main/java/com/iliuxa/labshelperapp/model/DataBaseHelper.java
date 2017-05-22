@@ -191,7 +191,7 @@ public class DataBaseHelper{
         LabsInfo tempLabsInfo = mLabsInfoDao.getEqualsLabsInfo(labsInfo);
         mLabsInfoDao.delete(tempLabsInfo);
         for (Lab lab : mLabDao.getLabsByLabsInfoId(tempLabsInfo)){
-            mLabDao.delete(lab);
+            mLabDao.delete(lab);//todo add deleting files
             for(StudentsToLabs stl : mStudentsToLabsDao.getStudentsToLabsByLabId(lab)){
                 if (stl == null) continue;
                 mStudentsToLabsDao.delete(stl);

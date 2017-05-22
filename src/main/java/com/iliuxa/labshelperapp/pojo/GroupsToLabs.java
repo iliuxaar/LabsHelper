@@ -93,8 +93,6 @@ public class GroupsToLabs {
         this.subGroup = subGroup;
     }
 
-    //todo add property
-
     @Override
     public int hashCode() {
         int result = beginTime.hashCode();

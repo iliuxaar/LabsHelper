@@ -16,7 +16,9 @@ public class LabsLoader {
     private static final String HOST = "pop.gmail.com";
     private static final String PATH_ABSOLUTE = new File("").getAbsolutePath();
 
-    private String path = PATH_ABSOLUTE;
+    private String pathForSave = PATH_ABSOLUTE;
+    private String labPath;
+
     private String mLabName;
     private int mLabNumber;
     private int mTerm;
@@ -89,7 +91,7 @@ public class LabsLoader {
                     if (message.getSubject().split("_").length == 8) {
                         String fileName = MimeUtility.decodeText(part.getFileName());
                         updateDataBase(message, fileName);
-                        part.saveFile(PATH_ABSOLUTE + path);
+                        part.saveFile(pathForSave);
                     }
                 }
             }
@@ -98,7 +100,8 @@ public class LabsLoader {
 
     private void updateDataBase(Message message, String fileName) throws SQLException, MessagingException {
         String subject = message.getSubject();
-        path = "";
+        pathForSave = PATH_ABSOLUTE;
+        labPath = "";
         String[] parseSubject = subject.split("_");
         if (parseSubject.length < 5) return;
         mLabName = parseSubject[0];
@@ -114,20 +117,22 @@ public class LabsLoader {
         makeDir(mStudentName);
         makeDir(mLabName);
 
-        path += File.separator + fileName;
+        labPath += File.separator + fileName;
+        pathForSave += File.separator + fileName;
 
         Group group = new Group(mGroup);
         Lab lab = new Lab(mLabNumber);
         LabsInfo labsInfo = new LabsInfo(mLabName, mTerm);
         Student student = new Student(mStudentName, mSubGroup);
-        StudentsToLabs studentsToLabs = new StudentsToLabs(path, message.getSentDate());
+        StudentsToLabs studentsToLabs = new StudentsToLabs(labPath, message.getSentDate());
         GroupsToLabs groupsToLabs = new GroupsToLabs(0, 0 , mSubGroup);
         DataBaseFactory.getInstance().getDataBase().createFieldsAfterDownload(labsInfo,group,student,studentsToLabs,lab,groupsToLabs);
     }
 
     private void makeDir(String newPath){
-        path += "\\" + newPath;
-        File dir = new File(path);
+        labPath += File.separator + newPath;
+        pathForSave += File.separator + newPath;
+        File dir = new File(pathForSave);
         if(!dir.exists())
             dir.mkdir();
     }
