@@ -17,7 +17,7 @@ import java.util.Base64;
 import java.util.regex.Pattern;
 
 
-public class EmailDialog {
+public class EmailDialog implements BaseDialog{
 
     private Stage dialogStage;
     private Email mEmail;
@@ -41,10 +41,6 @@ public class EmailDialog {
             String encodedPassword = new String(Base64.getDecoder().decode(mEmail.getPassword()));
             passwordText.setText(MimeUtility.decodeText(encodedPassword));
         }
-    }
-
-    public void setDialogStage(Stage dialogStage){
-        this.dialogStage = dialogStage;
     }
 
     @FXML
@@ -82,5 +78,10 @@ public class EmailDialog {
             label.setTextFill(Color.RED);
             label.setText(MESSAGE_NOT_CONNECT);
         }
+    }
+
+    @Override
+    public void setDialogStage(Stage dialogStage){
+        this.dialogStage = dialogStage;
     }
 }

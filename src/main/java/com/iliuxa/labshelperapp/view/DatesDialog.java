@@ -1,5 +1,6 @@
 package com.iliuxa.labshelperapp.view;
 
+import com.iliuxa.labshelperapp.application.MainApp;
 import com.iliuxa.labshelperapp.model.DataBaseFactory;
 import com.iliuxa.labshelperapp.pojo.*;
 import com.iliuxa.labshelperapp.util.DateUtil;
@@ -12,7 +13,7 @@ import javafx.stage.Stage;
 import java.sql.SQLException;
 import java.util.Date;
 
-public class DatesDialog {
+public class DatesDialog implements BaseDialog{
 
     private ObservableList<LabsInfo> mLabName;
     private ObservableList<Group> mGroups;
@@ -118,7 +119,9 @@ public class DatesDialog {
         dialogStage.close();
     }
 
+    @Override
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
+
 }

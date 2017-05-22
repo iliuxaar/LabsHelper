@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-public class RootMenuWindow {
+public class RootMenuWindow implements BaseView{
 
     private MainApp mainApp;
 
@@ -27,10 +27,6 @@ public class RootMenuWindow {
         mainApp.showDatesDialog();
     }
 
-    public void setMainApp(MainApp app){
-        mainApp = app;
-    }
-
     public void onExportClick() throws IOException {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("DataBase file (*.s3db)", "*.s3db");
@@ -43,5 +39,10 @@ public class RootMenuWindow {
             File newFiles = new File(file.toPath().toString());
             Files.copy(savedFile.toPath(), newFiles.toPath());
         }
+    }
+
+    @Override
+    public void setMainApp(MainApp app){
+        mainApp = app;
     }
 }

@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class LabsCreatorDialog {
+public class LabsCreatorDialog implements BaseDialog{
 
     private Stage dialogStage;
     private ObservableList<LabsInfo> mLabName;
@@ -75,12 +75,13 @@ public class LabsCreatorDialog {
         return new LabsInfo(count, name, term);
     }
 
-    public void setDialogStage(Stage dialogStage) {
-        this.dialogStage = dialogStage;
-    }
-
     private void updateContent() throws SQLException {
         mLabName.clear();
         mLabName.addAll(DataBaseFactory.getInstance().getDataBase().getLabsInfoDao().queryForAll());
+    }
+
+    @Override
+    public void setDialogStage(Stage dialogStage) {
+        this.dialogStage = dialogStage;
     }
 }
