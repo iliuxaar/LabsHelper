@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="825.0" prefWidth="1015.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iliuxa.labshelperapp.view.LabsInfoWindow">
+<AnchorPane id="AnchorPane" prefHeight="825.0" prefWidth="1015.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iliuxa.labshelperapp.view.LabsInfoWindow">
    <children>
       <GridPane prefHeight="825.0" prefWidth="1015.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -59,8 +59,8 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="20.0" prefWidth="735.0" spacing="10.0">
                      <children>
-                        <ToggleButton fx:id="subGroup_1" contentDisplay="CENTER" mnemonicParsing="false" text="ToggleButton" />
-                        <ToggleButton fx:id="subGroup_2" contentDisplay="CENTER" mnemonicParsing="false" text="ToggleButton" />
+                        <ToggleButton fx:id="subGroup_1" contentDisplay="CENTER" mnemonicParsing="false" text="Подгруппа 1" />
+                        <ToggleButton fx:id="subGroup_2" contentDisplay="CENTER" mnemonicParsing="false" text="Подгруппа 2" />
                      </children>
                      <VBox.margin>
                         <Insets />

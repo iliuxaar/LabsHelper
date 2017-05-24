@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="windows-1251"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -8,6 +8,11 @@
     <artifactId>LabsHelper</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>windows-1251</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>windows-1251</project.reporting.outputEncoding>
+    </properties>
 
     <build>
         <plugins>

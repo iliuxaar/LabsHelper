@@ -26,7 +26,8 @@ public class RootMenuWindow implements BaseView{
     public void onDateChangerClick()throws IOException{
         mainApp.showDatesDialog();
     }
-
+//todo add import group from word
+    //todo add dilog for create group or students
     public void onExportClick() throws IOException {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("DataBase file (*.s3db)", "*.s3db");

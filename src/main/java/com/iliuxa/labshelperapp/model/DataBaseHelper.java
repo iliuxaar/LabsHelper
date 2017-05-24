@@ -116,9 +116,9 @@ public class DataBaseHelper{
         mLabsInfoDao = null;
     }
 
-    public ObservableList<StudentInfo> getStudentInfo(Group group) throws SQLException {
+    public List<StudentInfo> getStudentInfo(Group group) throws SQLException {
         List<Student> students = getStudentDao().getStudentByGroup(group);
-        ObservableList<StudentInfo> studentsInfo = FXCollections.observableArrayList();
+        List<StudentInfo> studentsInfo = FXCollections.observableArrayList();
         for(Student student : students){
             StudentInfo studentInfo = new StudentInfo();
             studentInfo.setStudent(student);
@@ -239,5 +239,33 @@ public class DataBaseHelper{
         if(lab != null)
             return mGroupsToLabsDao.createField(new GroupsToLabs(groupId, lab.getId(), subGroup));
         return null;
+    }
+
+    public List<StudentInfo> getStudentsBySubgroup(int subGroup, Group group) throws SQLException {
+        List<Student> students = getStudentDao().getStudentByGroup(group);
+        List<StudentInfo> studentsInfo = FXCollections.observableArrayList();
+        for(Student student : students) {
+            if (student.getSubGroup() == subGroup) {
+                StudentInfo studentInfo = new StudentInfo();
+                studentInfo.setStudent(student);
+                //studentInfo.setMarks();
+                studentsInfo.add(studentInfo);
+            }
+        }
+        return studentsInfo;
+    }
+
+    public List<StudentsLabs> getStudentsLabs(Student student) throws SQLException {
+        List<StudentsLabs> studentsLabs = new ArrayList<>();
+        List<StudentsToLabs> studentsToLabs;
+        studentsToLabs = mStudentsToLabsDao.getStudentsToLabsByStudentId(student);
+        if(studentsToLabs == null) return null;
+        for(StudentsToLabs tempSTL : studentsToLabs){
+            Lab lab = mLabDao.getLabById(tempSTL.getLabId());
+            LabsInfo labsInfo = mLabsInfoDao.queryForId(lab.getLabInfoId());
+            StudentsLabs temp = new StudentsLabs(labsInfo, lab, tempSTL);
+            studentsLabs.add(temp);
+        }
+        return studentsLabs;
     }
 }

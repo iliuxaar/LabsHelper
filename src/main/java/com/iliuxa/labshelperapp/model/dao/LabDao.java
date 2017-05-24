@@ -40,4 +40,8 @@ public class LabDao extends BaseDaoImpl<Lab, Integer> {
             return labs.get(0);
         return null;
     }
+
+    public Lab getLabById(int labId) throws SQLException {
+        return  queryForId(labId);
+    }
 }

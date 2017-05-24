@@ -4,21 +4,20 @@ package com.iliuxa.labshelperapp.view;
 import com.iliuxa.labshelperapp.application.MainApp;
 import com.iliuxa.labshelperapp.model.DataBaseFactory;
 import com.iliuxa.labshelperapp.model.LabsLoader;
-import com.iliuxa.labshelperapp.pojo.Group;
-import com.iliuxa.labshelperapp.pojo.Student;
+import com.iliuxa.labshelperapp.pojo.*;
 import com.iliuxa.labshelperapp.model.DataBaseHelper;
-import com.iliuxa.labshelperapp.pojo.StudentInfo;
-import com.iliuxa.labshelperapp.pojo.StudentsToLabs;
+import com.iliuxa.labshelperapp.util.DateUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class LabsInfoWindow implements BaseView{
@@ -27,81 +26,145 @@ public class LabsInfoWindow implements BaseView{
 
     private ObservableList<StudentInfo> mStudents;
     private ObservableList<Group> mGroups;
+    private ObservableList<LabsInfo> mLabsName;
+
+    private ArrayList<Integer> mLabNumber = new ArrayList<>();
 
     private DataBaseHelper mDataBaseHelper;
 
-    @FXML private TableView<Group> group_list;
-    @FXML private TableView<StudentInfo> student_table;
-    @FXML private TableColumn<Group, String> group;
-    @FXML private TableColumn<StudentInfo, String> name;
-    @FXML private TableColumn<StudentInfo, Integer> lab_1;
-    @FXML private TableColumn<StudentInfo, Integer> lab_2;
-    @FXML private TableColumn<StudentInfo, Integer> lab_3;
-    @FXML private TableColumn<StudentInfo, Integer> lab_4;
-    @FXML private TableColumn<StudentInfo, Integer> lab_5;
-    @FXML private TableColumn<StudentInfo, Integer> lab_6;
-    @FXML private TableColumn<StudentInfo, Integer> lab_7;
-    @FXML private TableColumn<StudentInfo, Integer> lab_8;
-
-    @FXML private Button bt;
+    @FXML private TableView<Group> groupList;
+    @FXML private TableColumn<Group, String> groupCell;
+    @FXML private TableView<LabsInfo> labNameList;
+    @FXML private TableColumn<LabsInfo, String> labNameCell;
+    @FXML private TableView<StudentInfo> studentTable;
+    @FXML private TableColumn<StudentInfo, String> studentNameCell;
+    private ToggleGroup subGroupFilter = new ToggleGroup();
+    @FXML private ToggleButton subGroup_1;
+    @FXML private ToggleButton subGroup_2;
 
     @FXML
-    private void initialize() throws IOException {
+    private void initialize() throws IOException, SQLException, MessagingException {
+        mDataBaseHelper = DataBaseFactory.getInstance().getDataBase();
+        //LabsLoader labsLoader = new LabsLoader();
+        //labsLoader.downloadEmailAttachments("iliuxa.ariko@gmail.com", "iliuxa250595");
+        initLists();
+        initColumn();
+        initListeners();
+        initToggleButton();
+        //todo add disable subgroups
+        labNameList.setItems(mLabsName);
+        groupList.setItems(mGroups);
+        studentTable.setItems(mStudents);
+    }
 
-        initCollumn();
-        LabsLoader labsLoader = new LabsLoader();
+    private void initLists(){
         try {
-            labsLoader.downloadEmailAttachments("iliuxa.ariko@gmail.com","iliuxa250595");
-        } catch (MessagingException | SQLException | IOException e) {
-            e.printStackTrace();
-        }
-        mStudents = FXCollections.observableArrayList();
-        mGroups = FXCollections.observableArrayList();
-
-
-        try {
-            mGroups.addAll(DataBaseFactory.getInstance().getDataBase().getGroupDao().getGroups());
+            mLabsName = FXCollections.observableArrayList();
+            mLabsName.addAll(mDataBaseHelper.getLabsInfoDao().queryForAll());
+            mStudents = FXCollections.observableArrayList();
+            mGroups = FXCollections.observableArrayList();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
+    private void initListeners(){
+        labNameList.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> onLabNameClick(newValue));
+        groupList.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> onGroupClick());
+        subGroupFilter.selectedToggleProperty().addListener(event->{
+                if(subGroupFilter.getSelectedToggle() != null){
+                    ToggleButton temp = (ToggleButton)subGroupFilter.getSelectedToggle();
+                    if((Integer)temp.getUserData() == 1) {
+                        subGroup_1.setStyle("-fx-base: lightgreen;");
+                        subGroup_2.setStyle(null);
+                    } else{
+                        subGroup_2.setStyle("-fx-base: lightgreen;");
+                        subGroup_1.setStyle(null);
+                    }
+                    onSubGroupFilterClick((Integer) subGroupFilter.getSelectedToggle().getUserData());
+                } else {
+                    subGroup_1.setStyle(null);
+                    subGroup_2.setStyle(null);
+                    onSubGroupFilterCancel();
+                }
+            });
+        studentTable.setOnMouseClicked(event -> {
+            System.out.println(event.getClickCount());
+            if(event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2){
+                try {
+                    StudentInfo studentInfo = studentTable.getSelectionModel().getSelectedItem();
+                    mainApp.showStudentInfo(studentInfo.getStudent());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
-        group_list.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> update(newValue));
+    private void initColumn(){
+        studentNameCell.setCellValueFactory(cellData -> cellData.getValue().getStudent().nameProperty());
+        groupCell.setCellValueFactory(cellData -> cellData.getValue().groupProperty());
+        labNameCell.setCellValueFactory(cellData -> cellData.getValue().labNameProperty());
+    }
 
-        group_list.setItems(mGroups);
+    private void initToggleButton(){
+        subGroup_1.setToggleGroup(subGroupFilter);
+        subGroup_2.setToggleGroup(subGroupFilter);
+        subGroup_1.setUserData(1);
+        subGroup_2.setUserData(2);
+    }
 
-//        update(mGroups.get(0));
-        student_table.setItems(mStudents);
+    private void onGroupClick() {
+        mLabNumber.clear();
+        mStudents.clear();
+        for (int i = 0; i < labNameList.getSelectionModel().getSelectedItem().getLabCount(); i++) {
+            mLabNumber.add(i + 1);
+        }
+        try {
+            Group group = groupList.getSelectionModel().getSelectedItem();
+            mStudents.addAll(mDataBaseHelper.getStudentInfo(group));
+            for(int lab : mLabNumber){
+                TableColumn<StudentInfo, Integer> column = new TableColumn<>("Ëàá " + lab);
+                studentTable.getColumns().add(column);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        //todo create studentsInfo
+    }
+
+    private void onLabNameClick(LabsInfo newValue){
+        mGroups.clear();
+        try {
+            mGroups.addAll(DataBaseFactory.getInstance().getDataBase().getGroupsWithSameLabName(newValue));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void onStudentClick(StudentInfo newValue) {
 
     }
 
-    private void update(Group group){
+    private void onSubGroupFilterCancel() {
         mStudents.clear();
         try {
-            mStudents = DataBaseFactory.getInstance().getDataBase().getStudentInfo(group);
-            student_table.setItems(mStudents);
+            mStudents.addAll(mDataBaseHelper.getStudentInfo(groupList.getSelectionModel().getSelectedItem()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void initCollumn(){
-        name.setCellValueFactory(cellData -> cellData.getValue().getStudent().nameProperty());
-        lab_1.setCellValueFactory(cellData -> cellData.getValue().marksProperty(1).asObject());
-        lab_2.setCellValueFactory(cellData -> cellData.getValue().marksProperty(2).asObject());
-        lab_3.setCellValueFactory(cellData -> cellData.getValue().marksProperty(3).asObject());
-        lab_4.setCellValueFactory(cellData -> cellData.getValue().marksProperty(4).asObject());
-        lab_5.setCellValueFactory(cellData -> cellData.getValue().marksProperty(5).asObject());
-        lab_6.setCellValueFactory(cellData -> cellData.getValue().marksProperty(6).asObject());
-        lab_7.setCellValueFactory(cellData -> cellData.getValue().marksProperty(7).asObject());
-        lab_8.setCellValueFactory(cellData -> cellData.getValue().marksProperty(8).asObject());
-
-        group.setCellValueFactory(cellData -> cellData.getValue().groupProperty());
-    }
-
-    public void onClick() throws IOException {
-        mainApp.showEmailDialog();
+    private void onSubGroupFilterClick(Integer subGroup) {
+        mStudents.clear();
+        try {
+            mStudents.addAll(mDataBaseHelper.getStudentsBySubgroup(subGroup, groupList.getSelectionModel().getSelectedItem()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

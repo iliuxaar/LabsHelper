@@ -4,8 +4,10 @@
     <file url="file://$PROJECT_DIR$/src/main/java/com/iliuxa/labshelperapp/application/MainApp.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/iliuxa/labshelperapp/model/LabsLoader.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/iliuxa/labshelperapp/model/dao/LabDao.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/iliuxa/labshelperapp/pojo/StudentsLabs.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/iliuxa/labshelperapp/view/EmailDialog.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/iliuxa/labshelperapp/view/LabsCreatorDialog.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/iliuxa/labshelperapp/view/LabsInfoWindow.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/iliuxa/labshelperapp/view/RootMenuWindow.java" charset="windows-1251" />
   </component>
 </project>

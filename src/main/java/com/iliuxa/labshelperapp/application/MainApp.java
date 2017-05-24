@@ -1,7 +1,7 @@
 package com.iliuxa.labshelperapp.application;
 
 import com.iliuxa.labshelperapp.model.DataBaseFactory;
-import com.iliuxa.labshelperapp.util.DateUtil;
+import com.iliuxa.labshelperapp.pojo.Student;
 import com.iliuxa.labshelperapp.view.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,10 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 
 public class MainApp extends Application {
 
@@ -25,7 +22,7 @@ public class MainApp extends Application {
     public void start(Stage stage) throws Exception {
         primaryStage = stage;
         initRootLayout();
-        showGroupsInfo();
+        showLabsInfoWindow();
     }
 
     private void initRootLayout() throws IOException {
@@ -39,15 +36,25 @@ public class MainApp extends Application {
         primaryStage.show();
     }
 
-    public LabsInfoWindow showGroupsInfo() throws IOException {
+    public void showLabsInfoWindow() throws IOException {
         primaryStage.setTitle("Информация групп");
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(MainApp.class.getResource("/fxml/lab_info_layout.fxml"));
+        loader.setLocation(MainApp.class.getResource("/fxml/lab_info_window.fxml"));
         AnchorPane personOverview = (AnchorPane) loader.load();
         rootLayout.setCenter(personOverview);
         LabsInfoWindow controller = loader.getController();
         controller.setMainApp(this);
-        return controller;
+    }
+
+    public void showStudentInfo(Student student) throws IOException {
+        primaryStage.setTitle(student.getname());
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(MainApp.class.getResource("/fxml/student_window.fxml"));
+        AnchorPane personOverview = (AnchorPane) loader.load();
+        rootLayout.setCenter(personOverview);
+        StudentWindow controller = loader.getController();
+        controller.setStudent(student);
+        controller.setMainApp(this);
     }
 
     public void showEmailDialog() throws IOException {

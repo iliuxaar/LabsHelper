@@ -14,7 +14,7 @@ public class LabsLoader {
 
     private static final String PORT = "995";
     private static final String HOST = "pop.gmail.com";
-    private static final String PATH_ABSOLUTE = new File("").getAbsolutePath();
+    public static final String PATH_ABSOLUTE = new File("").getAbsolutePath();
 
     private String pathForSave = PATH_ABSOLUTE;
     private String labPath;

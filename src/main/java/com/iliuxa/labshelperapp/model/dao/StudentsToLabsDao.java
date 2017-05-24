@@ -29,4 +29,8 @@ public class StudentsToLabsDao extends BaseDaoImpl<StudentsToLabs, Integer> {
     public List<StudentsToLabs> getStudentsToLabsByLabId(Lab lab) throws SQLException {
         return query(queryBuilder().where().eq(StudentsToLabs.FIELD_LAB_ID, lab.getId()).prepare());
     }
+
+    public List<StudentsToLabs> getStudentsToLabsByStudentId(Student student) throws SQLException {
+        return query(queryBuilder().where().eq(StudentsToLabs.FIELD_STUDENT_ID, student.getId()).prepare());
+    }
 }
