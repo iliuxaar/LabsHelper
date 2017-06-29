@@ -33,4 +33,10 @@ public class StudentsToLabsDao extends BaseDaoImpl<StudentsToLabs, Integer> {
     public List<StudentsToLabs> getStudentsToLabsByStudentId(Student student) throws SQLException {
         return query(queryBuilder().where().eq(StudentsToLabs.FIELD_STUDENT_ID, student.getId()).prepare());
     }
+
+    public void setLabMark(StudentsToLabs studentsToLabs, int mark) throws SQLException {
+        StudentsToLabs stl = getEqualsStudentsToLabs(studentsToLabs);
+        stl.setLabMark(mark);
+        update(stl);
+    }
 }

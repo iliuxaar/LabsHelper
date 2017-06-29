@@ -10,7 +10,6 @@ public class StudentInfo {
 
     private Student student;
     private ArrayList<Integer> marks;
-    private Integer total;
 
     public StudentInfo(Student student, ArrayList<Integer> marks) {
         this.student = student;
@@ -36,18 +35,10 @@ public class StudentInfo {
         this.marks = marks;
     }
 
-    public Integer getTotal() {
-        return total;
-    }
-
-    public void setTotal(Integer total) {
-        this.total = total;
-    }
-
     public IntegerProperty marksProperty(int labNumber){
-        if (marks == null || marks.get(labNumber - 1) == null){
+        if (marks == null || marks.get(labNumber) == null){
             return new SimpleIntegerProperty(0);
         }
-        else return new SimpleIntegerProperty(marks.get(labNumber - 1));
+        else return new SimpleIntegerProperty(marks.get(labNumber));
     }
 }

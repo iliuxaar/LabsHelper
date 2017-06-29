@@ -4,9 +4,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import org.omg.CORBA.PUBLIC_MEMBER;
-
-import java.io.File;
 
 public class StudentsLabs {
 

@@ -42,7 +42,7 @@ public class Email {
     }
 
     public String getPassword() {
-        return password;
+        return new String(Base64.getDecoder().decode(password));
     }
 
     public void setPassword(String password) {

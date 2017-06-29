@@ -31,6 +31,7 @@ public class Student {
     public Student(String name, int groupId, int subGroup) {
         this.name = name;
         this.groupId = groupId;
+        this.subGroup = subGroup;
     }
 
     public Student(String name, int subGroup) {
@@ -40,6 +41,10 @@ public class Student {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
     }
 
     public String getname() {
@@ -87,6 +92,4 @@ public class Student {
         Student student = (Student) obj;
         return name.equals(student.name) && groupId == student.groupId && subGroup == student.subGroup;
     }
-
-
 }

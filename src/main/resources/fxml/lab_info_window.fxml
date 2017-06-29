@@ -79,8 +79,8 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="3.0" prefWidth="735.0" spacing="10.0">
                      <children>
-                        <ToggleButton mnemonicParsing="false" text="ToggleButton" />
-                        <ToggleButton mnemonicParsing="false" text="ToggleButton" />
+                        <ToggleButton fx:id="filter_1" mnemonicParsing="false" text="Показать отстающих" />
+                        <ToggleButton fx:id="filter_2" mnemonicParsing="false" text="Показать сдавших" />
                      </children>
                      <padding>
                         <Insets bottom="10.0" />

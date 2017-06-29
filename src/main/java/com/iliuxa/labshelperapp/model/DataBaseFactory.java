@@ -5,11 +5,11 @@ import java.sql.SQLException;
 
 public class DataBaseFactory {
 
-    private static DataBaseFactory ourInstance = new DataBaseFactory();
+    private static DataBaseFactory mInstance = new DataBaseFactory();
     private DataBaseHelper dataBaseHelper;
 
     public static DataBaseFactory getInstance() {
-        return ourInstance;
+        return mInstance;
     }
 
     private DataBaseFactory() {

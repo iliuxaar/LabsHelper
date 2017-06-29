@@ -1,36 +1,31 @@
 package com.iliuxa.labshelperapp.view;
 
-
 import com.iliuxa.labshelperapp.application.MainApp;
-import com.iliuxa.labshelperapp.model.DataBaseFactory;
 import com.iliuxa.labshelperapp.model.LabsLoader;
 import com.iliuxa.labshelperapp.pojo.*;
-import com.iliuxa.labshelperapp.model.DataBaseHelper;
-import com.iliuxa.labshelperapp.util.DateUtil;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import com.iliuxa.labshelperapp.presenter.ILabsInfoPresenter;
+import com.iliuxa.labshelperapp.presenter.LabsInfoWindowPresenter;
+import com.iliuxa.labshelperapp.util.StatisticsBuilder;
+import javafx.beans.property.IntegerProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 import javax.mail.MessagingException;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
-
-public class LabsInfoWindow implements BaseView{
+public class LabsInfoWindow implements BaseView, ILabsInfoWindowView{
 
     private MainApp mainApp;
-
-    private ObservableList<StudentInfo> mStudents;
-    private ObservableList<Group> mGroups;
-    private ObservableList<LabsInfo> mLabsName;
-
-    private ArrayList<Integer> mLabNumber = new ArrayList<>();
-
-    private DataBaseHelper mDataBaseHelper;
+    private ILabsInfoPresenter mLabsInfoPresenter;
 
     @FXML private TableView<Group> groupList;
     @FXML private TableColumn<Group, String> groupCell;
@@ -39,33 +34,64 @@ public class LabsInfoWindow implements BaseView{
     @FXML private TableView<StudentInfo> studentTable;
     @FXML private TableColumn<StudentInfo, String> studentNameCell;
     private ToggleGroup subGroupFilter = new ToggleGroup();
+    private ToggleGroup filter = new ToggleGroup();
     @FXML private ToggleButton subGroup_1;
     @FXML private ToggleButton subGroup_2;
+    @FXML private ToggleButton filter_1;
+    @FXML private ToggleButton filter_2;
 
     @FXML
     private void initialize() throws IOException, SQLException, MessagingException {
-        mDataBaseHelper = DataBaseFactory.getInstance().getDataBase();
-        //LabsLoader labsLoader = new LabsLoader();
-        //labsLoader.downloadEmailAttachments("iliuxa.ariko@gmail.com", "iliuxa250595");
-        initLists();
+        mLabsInfoPresenter = new LabsInfoWindowPresenter(this);
+        LabsLoader labsLoader = new LabsLoader();
+        try{
+            Email email = mLabsInfoPresenter.getEmail();
+            if(email == null); //mainApp.showEmailDialog();
+            else {
+                if(MainApp.firstLoad) {
+                    labsLoader.downloadEmailAttachments(email.getEmail(), email.getPassword());
+                    MainApp.firstLoad = false;
+                }
+            }
+        }catch (MessagingException e){
+
+        }catch (IOException e){
+
+        }
         initColumn();
         initListeners();
         initToggleButton();
-        //todo add disable subgroups
-        labNameList.setItems(mLabsName);
-        groupList.setItems(mGroups);
-        studentTable.setItems(mStudents);
-    }
 
-    private void initLists(){
-        try {
-            mLabsName = FXCollections.observableArrayList();
-            mLabsName.addAll(mDataBaseHelper.getLabsInfoDao().queryForAll());
-            mStudents = FXCollections.observableArrayList();
-            mGroups = FXCollections.observableArrayList();
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+        final ContextMenu cm = new ContextMenu();
+        MenuItem cmItem1 = new MenuItem("Создать статистику группы");
+        MenuItem cmItem2 = new MenuItem("Редактировать группу");
+//        cmItem1.setOnAction(new EventHandler<ActionEvent>() {
+//            public void handle(ActionEvent e) {
+//                Clipboard clipboard = Clipboard.getSystemClipboard();
+//                ClipboardContent content = new ClipboardContent();
+//                content.putImage(pic.getImage());
+//                clipboard.setContent(content);
+//            }
+//        });
+        cmItem1.setOnAction(event -> {
+            try {
+                StatisticsBuilder.writeIntoExcel(groupList.getSelectionModel().getSelectedItem().getGroup(), mLabsInfoPresenter.getStudentsList(),mainApp);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        cm.getItems().add(cmItem1);
+        cm.getItems().add(cmItem2);
+        groupList.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (event.getButton() == MouseButton.SECONDARY)
+                cm.show(groupList, event.getScreenX(), event.getScreenY());
         }
+        );
+
+        labNameList.setItems(mLabsInfoPresenter.getLabNameList());
+        groupList.setItems(mLabsInfoPresenter.getGroupList());
+        studentTable.setItems(mLabsInfoPresenter.getStudentsList());
     }
 
     private void initListeners(){
@@ -87,9 +113,27 @@ public class LabsInfoWindow implements BaseView{
                 } else {
                     subGroup_1.setStyle(null);
                     subGroup_2.setStyle(null);
-                    onSubGroupFilterCancel();
+                    onFilterCancel();
                 }
             });
+
+        filter.selectedToggleProperty().addListener(event ->{
+            if(filter.getSelectedToggle() != null){
+                ToggleButton temp = (ToggleButton)filter.getSelectedToggle();
+                if((Integer)temp.getUserData() == 1) {
+                    filter_1.setStyle("-fx-base: lightgreen;");
+                    filter_2.setStyle(null);
+                } else{
+                    filter_2.setStyle("-fx-base: lightgreen;");
+                    filter_1.setStyle(null);
+                }
+                onFilterClick((Integer) filter.getSelectedToggle().getUserData());
+            } else {
+                filter_1.setStyle(null);
+                filter_2.setStyle(null);
+                onFilterCancel();
+            }
+        });
         studentTable.setOnMouseClicked(event -> {
             System.out.println(event.getClickCount());
             if(event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2){
@@ -114,54 +158,57 @@ public class LabsInfoWindow implements BaseView{
         subGroup_2.setToggleGroup(subGroupFilter);
         subGroup_1.setUserData(1);
         subGroup_2.setUserData(2);
+        filter_1.setToggleGroup(filter);
+        filter_2.setToggleGroup(filter);
+        filter_1.setUserData(1);
+        filter_2.setUserData(2);
     }
 
     private void onGroupClick() {
-        mLabNumber.clear();
-        mStudents.clear();
-        for (int i = 0; i < labNameList.getSelectionModel().getSelectedItem().getLabCount(); i++) {
-            mLabNumber.add(i + 1);
-        }
+        ArrayList<TableColumn<StudentInfo, Integer>> columns = null;
         try {
-            Group group = groupList.getSelectionModel().getSelectedItem();
-            mStudents.addAll(mDataBaseHelper.getStudentInfo(group));
-            for(int lab : mLabNumber){
-                TableColumn<StudentInfo, Integer> column = new TableColumn<>("Лаб " + lab);
+            columns = mLabsInfoPresenter.getStudentsInfo
+                    (labNameList.getSelectionModel().getSelectedItem(), groupList.getSelectionModel().getSelectedItem());
+
+            for(int i = 0; i < columns.size(); i++){
+                TableColumn<StudentInfo, Integer> column;
+                column = columns.get(i);
+                int finalI = i;
+                column.setCellValueFactory(cellData -> cellData.getValue().marksProperty(finalI).asObject());
                 studentTable.getColumns().add(column);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        //todo create studentsInfo
     }
 
     private void onLabNameClick(LabsInfo newValue){
-        mGroups.clear();
         try {
-            mGroups.addAll(DataBaseFactory.getInstance().getDataBase().getGroupsWithSameLabName(newValue));
+            mLabsInfoPresenter.getGroupsByLabName(newValue);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void onStudentClick(StudentInfo newValue) {
-
-    }
-
-    private void onSubGroupFilterCancel() {
-        mStudents.clear();
+    private void onFilterCancel() {
         try {
-            mStudents.addAll(mDataBaseHelper.getStudentInfo(groupList.getSelectionModel().getSelectedItem()));
+            mLabsInfoPresenter.getStudents(groupList.getSelectionModel().getSelectedItem());
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     private void onSubGroupFilterClick(Integer subGroup) {
-        mStudents.clear();
         try {
-            mStudents.addAll(mDataBaseHelper.getStudentsBySubgroup(subGroup, groupList.getSelectionModel().getSelectedItem()));
+            mLabsInfoPresenter.getStudentBySubgroup(subGroup, groupList.getSelectionModel().getSelectedItem());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void onFilterClick(Integer num) {
+        try {
+            mLabsInfoPresenter.getFilteredStudents(num, groupList.getSelectionModel().getSelectedItem());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -171,4 +218,5 @@ public class LabsInfoWindow implements BaseView{
     public void setMainApp(MainApp app) {
         mainApp = app;
     }
+
 }

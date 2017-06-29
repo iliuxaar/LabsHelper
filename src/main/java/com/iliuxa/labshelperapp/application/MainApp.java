@@ -2,6 +2,7 @@ package com.iliuxa.labshelperapp.application;
 
 import com.iliuxa.labshelperapp.model.DataBaseFactory;
 import com.iliuxa.labshelperapp.pojo.Student;
+import com.iliuxa.labshelperapp.pojo.StudentsToLabs;
 import com.iliuxa.labshelperapp.view.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +18,7 @@ public class MainApp extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
+    public static boolean firstLoad = true;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -99,6 +101,22 @@ public class MainApp extends Application {
         dialogStage.setScene(scene);
         LabsCreatorDialog labsCreatorDialog = loader.getController();
         labsCreatorDialog.setDialogStage(dialogStage);
+        dialogStage.showAndWait();
+    }
+
+    public void showMarkDialog(StudentsToLabs studentsToLabs) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(MainApp.class.getResource("/fxml/markDialog.fxml"));
+        AnchorPane page = (AnchorPane)loader.load();
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Выставьте оценку");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(page);
+        dialogStage.setScene(scene);
+        MarkDialog markDialog = loader.getController();
+        markDialog.setDialogStage(dialogStage);
+        markDialog.setStudentsToLabs(studentsToLabs);
         dialogStage.showAndWait();
     }
 

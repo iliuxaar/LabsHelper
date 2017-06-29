@@ -3,29 +3,29 @@ package com.iliuxa.labshelperapp.view;
 import com.iliuxa.labshelperapp.application.MainApp;
 import com.iliuxa.labshelperapp.model.DataBaseFactory;
 import com.iliuxa.labshelperapp.model.DataBaseHelper;
-import com.iliuxa.labshelperapp.model.LabsLoader;
 import com.iliuxa.labshelperapp.pojo.Student;
 import com.iliuxa.labshelperapp.pojo.StudentsLabs;
+import com.iliuxa.labshelperapp.pojo.StudentsToLabs;
+import com.iliuxa.labshelperapp.presenter.IStudentWindowPresenter;
+import com.iliuxa.labshelperapp.presenter.StudentWindowPresenter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class StudentWindow implements BaseView {
+public class StudentWindow implements BaseView, IStudentWindowView {
 
     private MainApp mainApp;
     private Student mStudent;
-    private ObservableList<StudentsLabs> mStudentsLabs = FXCollections.observableArrayList();
-
-    private DataBaseHelper mDataBaseHelper;
+    IStudentWindowPresenter mStudentWindowPresenter;
 
     @FXML private ImageView backButton;
     @FXML private TableView<StudentsLabs> labsTable;
@@ -34,40 +34,43 @@ public class StudentWindow implements BaseView {
     @FXML private TableColumn<StudentsLabs , Integer> markCell;
     @FXML private TableColumn<StudentsLabs , String> labNumberCell;
 
+    private EventHandler<MouseEvent> mOnMouseClick = event -> {
+        if(event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+            try {
+                mStudentWindowPresenter.openFile(labsTable.getSelectionModel().getSelectedItem().getStudentsToLabs());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private EventHandler<MouseEvent> mOnBackClick = event -> {
+        if(event.getButton().equals(MouseButton.PRIMARY)) {
+            try {
+                mainApp.showLabsInfoWindow();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
     @FXML
     private void initialize() throws SQLException {
-        mDataBaseHelper = DataBaseFactory.getInstance().getDataBase();
+        mStudentWindowPresenter = new StudentWindowPresenter(this);
+        initCells();
+        initListeners();
+    }
 
-
-        backButton.setOnMouseClicked(event -> {
-            if(event.getButton().equals(MouseButton.PRIMARY)){
-                try {
-                    mainApp.showLabsInfoWindow();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
+    private void initCells(){
         labNameCell.setCellValueFactory(cellData -> cellData.getValue().labNameProperty());
         fileNameCell.setCellValueFactory(cellData -> cellData.getValue().fileNameProperty());
         markCell.setCellValueFactory(cellData -> cellData.getValue().markProperty().asObject());
         labNumberCell.setCellValueFactory(cellData -> cellData.getValue().labNumberProperty());
+    }
 
-        labsTable.setOnMouseClicked(event -> {
-            if(event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2){
-                if (Desktop.isDesktopSupported()) {
-                    try {
-                        Desktop.getDesktop().open(new File(LabsLoader.PATH_ABSOLUTE
-                                + labsTable.getSelectionModel().getSelectedItem().getStudentsToLabs().getLabPath()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        labsTable.setItems(mStudentsLabs);
+    private void initListeners(){
+        backButton.setOnMouseClicked(mOnBackClick);
+        labsTable.setOnMouseClicked(mOnMouseClick);
     }
 
     @Override
@@ -77,11 +80,20 @@ public class StudentWindow implements BaseView {
 
     public void setStudent(Student student){
         mStudent = student;
+        labsTable.setItems(mStudentWindowPresenter.updateContent(mStudent));
+    }
+
+    @Override
+    public void showMarkDialog(StudentsToLabs studentsToLabs) {
         try {
-            mStudentsLabs.addAll(mDataBaseHelper.getStudentsLabs(mStudent));
-            labsTable.setItems(mStudentsLabs);
-        } catch (SQLException e) {
+            mainApp.showMarkDialog(labsTable.getSelectionModel().getSelectedItem().getStudentsToLabs());
+        } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void updateTable() {
+
     }
 }

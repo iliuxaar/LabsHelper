@@ -12,7 +12,13 @@
         <menus>
           <Menu mnemonicParsing="false" text="Общее">
             <items>
+                  <MenuItem mnemonicParsing="false" text="Создание файла результатов группы" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Импорт студентов" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#onExportClick" text="Экспортировать таблицу" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Обновить данные" />
                   <SeparatorMenuItem mnemonicParsing="false" />
               <MenuItem mnemonicParsing="false" onAction="#onCloseClick" text="Выход" />
             </items>

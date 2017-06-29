@@ -26,7 +26,7 @@ public class EmailDialog implements BaseDialog{
     private static final String MESSAGE_NOT_CONNECT = "Ошибка соединения";
     private static final String MESSAGE_CONNECTED = "Соединение успешно";
 
-    private final Pattern emailPattern = Pattern.compile( "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" +
+    public final Pattern emailPattern = Pattern.compile( "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" +
             "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 
     @FXML private TextField emailText;

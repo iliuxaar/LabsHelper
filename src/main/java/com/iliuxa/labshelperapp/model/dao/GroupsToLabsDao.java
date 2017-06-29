@@ -15,7 +15,7 @@ public class GroupsToLabsDao extends BaseDaoImpl<GroupsToLabs, Integer> {
     }
 
     public GroupsToLabs getTimesOfGroupForLab(int groupId, int labId) throws SQLException {
-        return query(queryBuilder().where().eq(GroupsToLabs.FIELD_GROUP_ID, groupId)
+        return query(queryBuilder().where().eq(GroupsToLabs.FIELD_GROUP_ID, groupId).and()
                 .eq(GroupsToLabs.FIELD_LAB_ID, labId).prepare()).get(0);
     }
 

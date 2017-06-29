@@ -103,7 +103,7 @@ public class LabsLoader {
         pathForSave = PATH_ABSOLUTE;
         labPath = "";
         String[] parseSubject = subject.split("_");
-        if (parseSubject.length < 5) return;
+        if (parseSubject.length < 8) return;
         mLabName = parseSubject[0];
         mTerm = Integer.valueOf(parseSubject[1]);
         mLabNumber = Integer.valueOf(parseSubject[3]);

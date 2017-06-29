@@ -122,8 +122,42 @@ public class DataBaseHelper{
         for(Student student : students){
             StudentInfo studentInfo = new StudentInfo();
             studentInfo.setStudent(student);
-            //studentInfo.setMarks();
+            List<StudentsToLabs> studentsToLabs = getStudentsToLabsDao().getStudentsToLabsByStudentId(student);
+            ArrayList<Integer> marks = new ArrayList<>();
+            for(int i = 0; i < getLabsInfoDao().getLabsInfoById(getLabDao().getLabById(studentsToLabs.get(0).getLabId())).getLabCount(); i++){
+                marks.add(i ,null);
+            }
+            for(StudentsToLabs stl : studentsToLabs){
+                Lab lab = getLabDao().getLabById(stl.getLabId());
+                Integer mark = stl.getLabMark();
+                marks.add(lab.getlabNumber()-1 ,stl.getLabMark());
+            }
+            studentInfo.setMarks(marks);
             studentsInfo.add(studentInfo);
+        }
+        return studentsInfo;
+    }
+
+    public List<StudentInfo> getStudentsBySubgroup(int subGroup, Group group) throws SQLException {
+        List<Student> students = getStudentDao().getStudentByGroup(group);
+        List<StudentInfo> studentsInfo = FXCollections.observableArrayList();
+        for(Student student : students) {
+            if (student.getSubGroup() == subGroup) {
+                StudentInfo studentInfo = new StudentInfo();
+                studentInfo.setStudent(student);
+                List<StudentsToLabs> studentsToLabs = getStudentsToLabsDao().getStudentsToLabsByStudentId(student);
+                ArrayList<Integer> marks = new ArrayList<>();
+                for(int i = 0; i < getLabsInfoDao().getLabsInfoById(getLabDao().getLabById(studentsToLabs.get(0).getLabId())).getLabCount(); i++){
+                    marks.add(i ,null);
+                }
+                for(StudentsToLabs stl : studentsToLabs){
+                    Lab lab = getLabDao().getLabById(stl.getLabId());
+                    Integer mark = stl.getLabMark();
+                    marks.add(lab.getlabNumber()-1 ,stl.getLabMark());
+                }
+                studentInfo.setMarks(marks);
+                studentsInfo.add(studentInfo);
+            }
         }
         return studentsInfo;
     }
@@ -143,7 +177,6 @@ public class DataBaseHelper{
         groupsToLabs.setLabId(tempLab.getId());
         groupsToLabs.setGroupId(tempGroup.getId());
         GroupsToLabs tempGroupsToLabs = mGroupsToLabsDao.createField(groupsToLabs);
-
     }
 
     public void createLab(LabsInfo labsInfo) throws SQLException {
@@ -241,20 +274,6 @@ public class DataBaseHelper{
         return null;
     }
 
-    public List<StudentInfo> getStudentsBySubgroup(int subGroup, Group group) throws SQLException {
-        List<Student> students = getStudentDao().getStudentByGroup(group);
-        List<StudentInfo> studentsInfo = FXCollections.observableArrayList();
-        for(Student student : students) {
-            if (student.getSubGroup() == subGroup) {
-                StudentInfo studentInfo = new StudentInfo();
-                studentInfo.setStudent(student);
-                //studentInfo.setMarks();
-                studentsInfo.add(studentInfo);
-            }
-        }
-        return studentsInfo;
-    }
-
     public List<StudentsLabs> getStudentsLabs(Student student) throws SQLException {
         List<StudentsLabs> studentsLabs = new ArrayList<>();
         List<StudentsToLabs> studentsToLabs;
@@ -267,5 +286,49 @@ public class DataBaseHelper{
             studentsLabs.add(temp);
         }
         return studentsLabs;
+    }
+
+    public List<StudentInfo> getLaggingStudents(Group group) throws SQLException {
+        List<Student> students = getStudentDao().getStudentByGroup(group);
+        List<StudentInfo> studentsInfo = FXCollections.observableArrayList();
+        student: for(Student student : students) {
+                StudentInfo studentInfo = new StudentInfo();
+                studentInfo.setStudent(student);
+                List<StudentsToLabs> studentsToLabs = getStudentsToLabsDao().getStudentsToLabsByStudentId(student);
+                int labCount = getLabsInfoDao().getLabsInfoById(getLabDao().getLabById(studentsToLabs.get(0).getLabId())).getLabCount();
+                if(studentsToLabs.size() < labCount) {
+                    studentsInfo.add(studentInfo);
+                }else{
+                    for (StudentsToLabs stl : studentsToLabs) {
+                        if(stl.getLabMark() < 1 & stl.getLabMark() > 10){
+                            studentsInfo.add(studentInfo);
+                            continue student;
+                        }
+                    }
+
+                }
+        }
+        return studentsInfo;
+    }
+
+    public List<StudentInfo> getGoodStudents(Group group) throws SQLException {
+        List<Student> students = getStudentDao().getStudentByGroup(group);
+        List<StudentInfo> studentsInfo = FXCollections.observableArrayList();
+        for(Student student : students) {
+            StudentInfo studentInfo = new StudentInfo();
+            studentInfo.setStudent(student);
+            List<StudentsToLabs> studentsToLabs = getStudentsToLabsDao().getStudentsToLabsByStudentId(student);
+            int labCount = getLabsInfoDao().getLabsInfoById(getLabDao().getLabById(studentsToLabs.get(0).getLabId())).getLabCount();
+            if(studentsToLabs.size() == labCount) {
+                for (StudentsToLabs stl : studentsToLabs) {
+                    if(stl.getLabMark() > 0 & stl.getLabMark() < 11){
+                        studentsInfo.add(studentInfo);
+
+                    }
+                }
+
+            }
+        }
+        return studentsInfo;
     }
 }
